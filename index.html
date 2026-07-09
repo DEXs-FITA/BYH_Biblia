@@ -16,7 +16,7 @@
     <div id="mi-header"></div>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        fetch('includes/header.html')
+        fetch('./includes/header.html')
           .then(response => response.text())
           .then(data => {
             document.getElementById('mi-header').innerHTML = data;
