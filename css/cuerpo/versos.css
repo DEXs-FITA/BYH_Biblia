@@ -1,0 +1,41 @@
+/* DIVs CONTENEDORES */
+
+.contenedor-versos{
+    width: 100%;
+    padding-top: 115px;
+    padding-bottom: 60px;
+
+}
+.versos{
+    width: 80%;
+    margin: auto;
+    font-size: 1rem;
+}
+
+/* ESTILO DE VERSICULOS */
+.capitulo-header{
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+.versiculo{
+    margin-bottom: 3px;
+}
+.num-versiculo{
+    font-size: 1.3rem;
+}
+.versiculo:focus,
+.versiculo:focus-visible {
+  outline: none;   
+  border: none;  
+  box-shadow: none;   
+}
+.versiculo:hover .texto-versiculo,
+.versiculo:hover .num-versiculo,
+.versiculo:focus-visible{
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 1px;
+    text-decoration-color: var(--noche-secundario);
+    color: var(--resaltado);
+}

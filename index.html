@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="shortcut icon" href="./recursos/imagenes/bh_logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>B&H Biblia</title>
+</head>
+<body>
+    <!----------------------------------------------------->    
+    <!-- header -->
+    <!----------------------------------------------------->
+
+    <script>
+        fetch('../includes/header.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('mi-header').innerHTML = data;
+      });
+    </script>
+    <div id="mi-header"></div>
+
+    <!----------------------------------------------------->    
+    <!-- NAV PANEL DE CONTROL -->
+    <!----------------------------------------------------->
+    <nav class="control-panel">
+            <div class="panel">
+                <div class="caja-listas">
+                    <div class="libros">
+                        <label for="libros"></label>
+                        <div class="custom-select" id="libros-container">
+                            <button type="button" id="libros-btn" class="libros-trigger" disabled>
+                                Selecciona un libro
+                            </button>
+                            <div class="libros-panel" id="libros-panel">
+                                <!-- Los libros se insertarán aquí -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="capitulos">
+                        <label for="capitulos"></label>
+                        <div class="custom-select" id="capitulos-container">
+                            <button type="button" id="capitulos-btn" class="capitulos-trigger" disabled>
+                                Selecciona un capítulo
+                            </button>
+                            <div class="capitulos-panel" id="capitulos-panel">
+                                <!-- Los capítulos se insertarán -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="caja-botones">
+                <!--  IDBYH001: Este troso de codigo es para el swith tema, solo se modifico css  -->
+                <div class="theme-switch-container">
+                    <div class="theme-switch">
+                        <input type="checkbox" id="themeToggle" class="theme-toggle-input">
+                        <label for="themeToggle" class="theme-toggle-label">
+                            <span class="toggle-ball"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="maximizar-contenedor">
+                    <button class="btn-max-min">&#128470;</button>
+                </div>
+                <div class="cerrar">
+                    <button class="btn-cerrar">X</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <!----------------------------------------------------->
+    <main>
+        <section class="contenedor-versos">
+            <div class="versos">
+            </div>
+        </section>
+    </main>
+
+    <!-- PIE DE PAGUINA -->
+    <!----------------------------------------------------->
+    <footer>
+
+    </footer>
+
+    <!-- PLANTILLAS REUTILIZABLES -->
+    <!----------------------------------------------------->
+    <template id="modal-pantalla">
+        <div class="contenedor-modal">
+            <div class="modal">
+                <div class="versiculo-mostrado"></div>
+                <div class="botones">
+                    <button id="atras" class="btn-modal">anterior</button>
+                    <button id="zoom-menos" class="btn-modal">-</button>
+                    <button id="cerrar" class="btn-modal">cerrar</button>
+                    <button id="zoom-mas" class="btn-modal">+</button>
+                    <button id="siguiente" class="btn-modal">siguiente</button>
+                </div>
+            </div>
+        </div>
+    </template> 
+
+    <!-- CARGA DE ESCRIPS -->
+    <!----------------------------------------------------->
+    <script type="module" src="./js/index.js"></script>
+</body>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker registrado con éxito', reg.scope))
+        .catch(err => console.error('Error al registrar el Service Worker:', err));
+    });
+  }
+</script>
+</html>

@@ -1,0 +1,17 @@
+/*ZONA DE IMPORTACION Y CONEXIONES*/
+
+/*-- Importa base sobre el cual se trabaja, reset,
+variables de entorno y estilos globales --*/
+@import url(./globales/base.css);
+
+/*-- Importa estilos header--*/
+@import url(./globales/header.css);
+
+/*-- Importa estilos unicamente de los elementos nav --*/
+@import url(./globales/nav.css);
+
+/*-- Estilos contenedor versos, main --*/
+@import url(./cuerpo/versos.css);
+
+/*-- Estilos del contenedor modal --*/
+@import url(./cuerpo/modal.css);

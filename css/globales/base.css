@@ -1,0 +1,65 @@
+/* RESET BASICO */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* FUENTES GLOBALES */
+@font-face{
+    font-family: 'normalr';
+    src: url('../../recursos/fuentes/Montserrat-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: 'extrar';
+    src: url('../../recursos/fuentes/Montserrat-ExtraBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* VARIABLES GOLBALES */
+:root{
+    /*Colores modo Oscuro*/
+    --principal-primario: #E7E9E7;
+    --principal-secundario: #cdcecd;
+
+    /*Colores modo Oscuro*/
+    --noche-primario: #2E2E2E;
+    --noche-secundario: #474A4F;
+
+    --texto-primario: black;
+    --texto-noche: white;
+
+    --resaltado: #0065d0;
+}
+
+body{
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--principal-primario);
+    font-family: 'normalr';
+    color: var(--texto-primario);
+}
+
+/*============================================*/
+/*-- DARK MODE --*/
+/*============================================*/
+:root.dark{
+    /*Colores modo Oscuro*/
+    --principal-primario: #2E2E2E;
+    --principal-secundario: #474A4F;
+
+    /*Colores modo Oscuro*/
+    --noche-primario: #E7E9E7;
+    --noche-secundario: #cdcecd;
+
+    --texto-primario: white;
+    --texto-noche: black;
+
+    --resaltado: #FEE764;
+}

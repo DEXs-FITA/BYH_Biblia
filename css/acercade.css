@@ -1,0 +1,63 @@
+/*-- Importa estilos base --*/
+@import url(../css/globales/base.css);
+
+/*-- Importa estilos de include header --*/
+@import url(../css/globales/header.css);
+
+.sec-acerdade{
+    width: 80%;
+    margin: auto;
+    padding-top: 60px;
+}
+
+.sec-acerdade p strong,
+.sec-acerdade ul li strong{
+    color: var(--resaltado);
+}
+
+.sec-acerdade ul{
+    padding-left: 25px;
+    line-height: 1.8;
+}
+
+h1{
+    font-family: 'extrar';
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--resaltado);
+}
+
+h2, h3, h4, h5, h6 {
+    font-size: 1.5rem;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+/* CAJAS  */
+
+.contenedores-logos{
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.colaborador{
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+.img-logo{
+    width: 70px;
+    height: 70px;
+}
+
+.colaborador:hover {
+    background-color: var(--resaltado);
+    transform: scale(1.02);                      /* Se agranda poquito */
+}
