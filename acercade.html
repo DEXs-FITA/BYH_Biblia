@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/acercade.css">
+    <link rel="shortcut icon" href="../recursos/imagenes/bh_logo.svg" type="image/x-icon">
+    <title>Acerca de</title>
+</head>
+<body>
+    <div id="mi-header"></div>
+    <script>
+        fetch('../includes/header.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('mi-header').innerHTML = data;
+      });
+    </script>
+    <main>
+        <input type="checkbox" id="themeToggle" class="theme-toggle-input">
+        <label for="themeToggle" class="theme-toggle-label">
+            <span class="toggle-ball"></span>
+        </label>
+        <div class="sec-acerdade">
+            <!--TITULO GENERAL-->
+            <h1>B&H Libre: Proyecto Biblia</h1>
+
+            <!-- MENSAJE AL PUBLICO EN GENERAL -->
+            <h2>Un proyecto con una misión clara</h2>
+            <p>
+                strong>B&H Libre</strong> nace de una necesidad personal: contar con una herramienta digital 
+                que funcione sin problemas en <strong>laptops</strong>, 
+                independientemente del sistema operativo (Windows, Linux, macOS) o navegador web.
+            </p>
+                
+            <p>
+                Este proyecto es de <strong>código abierto y uso gratuito</strong>. Si bien no contamos con 
+                autorización expresa para reproducir algunos himnos, imágenes y videos, nuestro objetivo 
+                es noble: <strong>difundir el evangelio a toda nación, tribu, lengua y pueblo</strong>, 
+                respetando siempre los derechos de autor.
+            </p>
+
+            <!-- DETALLES DEL DESARROLLO -->
+            <h2>Detalles del proyecto</h2>
+            <ul>
+                <li><strong>Desarrollador:</strong> DEXs-FITA</li>
+                <li><strong>Versión actual:</strong> 2.1</li>
+                <li><strong>Fecha de lanzamiento:</strong> 6 de julio de 2026</li>
+                <li><strong>Ubicación:</strong> Monterrey, México</li>
+            </ul>
+
+            <!-- AGREDECIMEITOS Y REFERENCIAS -->
+            <h3>Agredecimentos</h3>
+                <p>
+                    Agradecemos a <strong>OpenSong</strong> por proporcionar las bases de datos bíblicas utilizadas en este proyecto.
+                </p>
+                <p>
+                    <small>Más información: <a href="https://opensong.org/downloads/" target="_blank">Visitar OpenSong Downloads</a></small>
+                </p>
+
+            <!-- CAJA LOGO COLAVOLADORES Y AGRADECIMEITNOS -->
+            <div class="contenedores-logos">
+                <div class="colaborador">
+                    <img class="img-logo" src="../recursos/imagenes/bh_logo.svg" alt="Logo DEXs-FITA">
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script type="module" src="../js/acerdade.js"></script>
+</html>
