@@ -1,7 +1,7 @@
 // sw.js
 const CACHE_NAME = 'biblia-v2.1';
 
-// Lista de todos los recursos que se guardarán al instalar la app
+// Lista de recursos a cachear
 const urlsToCache = [
   './',
   './index.html',
@@ -30,52 +30,82 @@ const urlsToCache = [
   './recursos/fuentes/Montserrat-ExtraBold.ttf'
 ];
 
-// --- Evento install: almacenar todos los archivos en caché ---
+// Evento install: cachea los recursos e identifica fallos
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Abriendo caché y guardando recursos...');
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => {
-        // Forzar que el service worker se active inmediatamente
-        return self.skipWaiting();
-      })
-      .catch(error => {
-        console.error('Error durante la instalación de la caché:', error);
-      })
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      console.log('Iniciando cacheo de recursos...');
+      
+      let archivosExitosos = 0;
+      let archivosFallidos = [];
+      
+      for (const url of urlsToCache) {
+        try {
+          const response = await fetch(url);
+          if (response && response.ok) {
+            await cache.put(url, response);
+            console.log('Exito: ' + url);
+            archivosExitosos++;
+          } else {
+            console.error('Error ' + (response?.status || 'desconocido') + ': ' + url);
+            archivosFallidos.push(url);
+          }
+        } catch (error) {
+          console.error('Error al cargar: ' + url, error);
+          archivosFallidos.push(url);
+        }
+      }
+      
+      console.log('Resumen: ' + archivosExitosos + ' archivos cacheados, ' + archivosFallidos.length + ' fallaron');
+      
+      if (archivosFallidos.length > 0) {
+        console.error('Archivos que fallaron:');
+        archivosFallidos.forEach(url => console.error('  - ' + url));
+      } else {
+        console.log('Todos los archivos se cachearon correctamente');
+      }
+      
+      await self.skipWaiting();
+    })()
   );
 });
 
-// --- Evento activate: limpiar cachés antiguas ---
+// Evento activate: limpia cachés antiguos y toma control
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-            .map(key => {
-              console.log('Borrando caché antigua:', key);
-              return caches.delete(key);
-            })
-      );
-    })
-    .then(() => {
-      // Tomar control de todas las pestañas abiertas inmediatamente
-      return self.clients.claim();
+    Promise.all([
+      caches.keys().then(keys => {
+        return Promise.all(
+          keys.filter(key => key !== CACHE_NAME)
+              .map(key => {
+                console.log('Eliminando cache antiguo: ' + key);
+                return caches.delete(key);
+              })
+        );
+      }),
+      self.clients.claim()
+    ]).then(() => {
+      console.log('Service Worker activado y controlando las pestañas');
     })
   );
 });
 
-// --- Estrategia "cache first" (primero caché, luego red) ---
+// Evento fetch: primero busca en cache, luego en red
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
-        // Si está en caché, lo devolvemos; si no, vamos a la red
-        return cachedResponse || fetch(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request).catch(() => {
+          // Si es una pagina HTML y falla, intenta mostrar index.html
+          if (event.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('./index.html');
+          }
+          return new Response('Recurso no disponible', { status: 503 });
+        });
       })
-      // No usamos .catch aquí para dejar que el navegador maneje el error
-      // cuando no hay caché ni red (mostrará su pantalla de "sin conexión").
   );
 });
