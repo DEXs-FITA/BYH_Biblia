@@ -20,7 +20,7 @@ export function inicializarBiblia() {
   let libroSeleccionadoIndex = null;
 
   // Carga inicial del JSON
-  fetch('recursos/versiones/RV1960.json')
+  fetch('./recursos/versiones/RV1960.json')
     .then(res => {
       if (!res.ok) throw new Error('Error al cargar el JSON');
       return res.json();
