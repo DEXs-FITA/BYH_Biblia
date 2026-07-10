@@ -183,8 +183,7 @@ export function inicializarBiblia() {
     contenedorVersos.appendChild(header);
 
     // Tarjetas de versículos
-    capitulo.v.forEach(versiculo => {
-      capitulo.v.forEach((versiculo, index) => {
+    capitulo.v.forEach((versiculo, index) => {
       const tarjeta = document.createElement('div');
       tarjeta.className = 'versiculo';
       tarjeta.setAttribute('tabindex', '0');
@@ -203,7 +202,6 @@ export function inicializarBiblia() {
         });
       });
       contenedorVersos.appendChild(tarjeta);
-    });
     });
   }
 }
