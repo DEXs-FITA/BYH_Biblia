@@ -6,7 +6,7 @@ const urlsToCache = [
   './',
   './index.html',
   './includes/header.html',
-  './public/acerdade.html',
+  '.acercade.html',
   './js/index.js',
   './js/acerdade.js',
   './js/nav/botones.js',
