@@ -58,38 +58,42 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
 /* Paneles (ocultos por defecto) */
 .libros-panel{
     display: none;
     position: absolute;
-
     width: 800px;
     max-height: 80vh;
     overflow-y: auto;
-
     background: var(--principal-secundario);
     padding: 10px 14px;
-
     column-count: 5;
     column-gap: 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
 .capitulos-panel{
     display: none;
     position: absolute;
-
-    width: 600px;
+    width: 650px;
     max-height: 80vh;
     overflow-y: auto;
-
     background: var(--principal-secundario);
     padding: 10px 14px;
-
-    column-count: 11;
-    column-gap: 10px;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 4px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-.libros-panel.open,
-.capitulos-panel.open{
+
+.libros-panel.open{
     display: block;
+}
+
+.capitulos-panel.open{
+    display: grid;
 }
 
 /*---------------------------------*/
@@ -101,51 +105,85 @@
     height: 40px;
     cursor: pointer;
     break-inside: avoid;
-
     font-size: 1rem;
     font-family: 'normalr';
     color: var(--texto-primario);
     background-color: var(--principal-secundario);
     border: none;
+    border-radius: 4px;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.libro-opcion:hover{
-    color: var(--resaltado);
-    background: var(--principal-primario);
-    box-shadow: inset 0 0 8px var(--principal-primario); /* Brillo interior */
-    transform: scale(1.02);                      /* Se agranda poquito */
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-}
+
 .capitulo-opcion{
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    height: 40px;
+    height: 36px;
     cursor: pointer;
-    break-inside: avoid;
-
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-family: 'normalr';
     color: var(--texto-primario);
     background-color: var(--principal-secundario);
     border: none;
+    border-radius: 4px;
+    padding: 0;
+    text-align: center;
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+.libro-opcion:hover,
 .capitulo-opcion:hover{
     color: var(--resaltado);
     background: var(--principal-primario);
-    box-shadow: inset 0 0 8px var(--principal-primario); /* Brillo interior */
-    transform: scale(1.02);                      /* Se agranda poquito */
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    box-shadow: inset 0 0 8px var(--principal-primario);
+    transform: scale(1.02);
 }
+
+/* Scroll personalizado para paneles */
+.libros-panel::-webkit-scrollbar,
+.capitulos-panel::-webkit-scrollbar {
+    width: 5px;
+}
+
+.libros-panel::-webkit-scrollbar-track,
+.capitulos-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.libros-panel::-webkit-scrollbar-thumb,
+.capitulos-panel::-webkit-scrollbar-thumb {
+    background: var(--noche-secundario);
+    border-radius: 10px;
+}
+
 @media screen and (max-width: 1024px){
     .capitulos-panel{
-        width: 200px;
-        column-count: 3;
+        width: 320px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 3px;
     }
     .libros-panel{
         width: 500px;
         column-count: 3;
     }
+    .capitulo-opcion{
+        height: 32px;
+        font-size: 0.8rem;
+    }
 }
 
+@media screen and (max-width: 600px){
+    .capitulos-panel{
+        width: 280px;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 8px 10px;
+    }
+    .capitulo-opcion{
+        height: 30px;
+        font-size: 0.7rem;
+    }
+}
 
 /*---------------------------------*/
 /*-- Estilo de Botones --*/
@@ -172,17 +210,17 @@
     display: none;
 }
 .theme-toggle-label{
-    position: relative; /* Para que el circulito no se desborde */
-    display: block; /* Para visualizar el label */
+    position: relative;
+    display: block;
     width: 60px;
     height: 30px;
     background-color: var(--principal-secundario);
     border-radius: 15px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);   
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     cursor: pointer;
 }
 .toggle-ball{
-    position: absolute; /* para hacer visible la bolita */
+    position: absolute;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -190,12 +228,11 @@
     top: 3px;
     left: 3px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-    /* Suavizar transicion */
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
 }
-/* Iconos dentro del circulo */
+
+/* Animacion Cambio de modo */
 .toggle-ball::before{
     content: "☀️";
     position: absolute;
@@ -211,18 +248,19 @@
 .theme-toggle-input:checked + .theme-toggle-label .toggle-ball::before{
     content: "🌙";
 }
-
 /*---------------------------------*/
 /*-- Botones Cerrar y Maximizar --*/
 /*---------------------------------*/
-.maximizar-contenedor, .cerrar{
+.maximizar-contenedor,
+.cerrar{
     width: 50px;
     height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.btn-max-min, .btn-cerrar{
+.btn-max-min,
+.btn-cerrar{
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -233,9 +271,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.134);
     padding: 0;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
-.btn-max-min:hover, .btn-cerrar:hover{
+.btn-max-min:hover,
+.btn-cerrar:hover{
     color: white;
     background-color: red;
 }

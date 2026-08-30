@@ -50,25 +50,26 @@
     justify-content:flex-end;
 }
 
-.acercade{
+.btn-acercade{
     width: 90px;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-        
+    background: none;
+
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
-}
+    border-top: none;
+    border-bottom: none;
 
-.acercade a{
     text-decoration: none;
     color: var(--texto-primario);
 }
 
-.acercade:hover{
+.btn-acercade:hover{
     border-left: 2px solid var(--principal-primario);
     border-right: 2px solid var(--principal-primario);
-    transform: scale(1.02);                      /* Se agranda poquito */
+    transform: scale(1.02);
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
 }

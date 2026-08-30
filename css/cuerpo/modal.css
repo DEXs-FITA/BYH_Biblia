@@ -49,7 +49,6 @@
     border: none;
     border-left: 2px solid transparent;
     border-right: 2px solid transparent;
-    background-color: var(--principal-secundario);
     font-family: 'normalr';
     color: var(--texto-primario);
     background-color: var(--principal-primario);

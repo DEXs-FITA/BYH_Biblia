@@ -1,10 +1,9 @@
-const CACHE_NAME = 'biblia-v2.1';
+const CACHE_NAME = 'biblia-v3.0.1';
 
 const urlsToCache = [
   './',
   './index.html',
-  './includes/header.html',
-  './acercade.html',
+  './includes/acercade.html',
   './js/index.js',
   './js/acercade.js',
   './js/nav/botones.js',

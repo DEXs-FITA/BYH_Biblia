@@ -1,0 +1,128 @@
+/* ==============================================
+   MODAL GENERAL 
+   ============================================== */
+
+/* Contenedor overlay */
+.contenedor-general {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e7e9e78f;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+}
+
+.contenedor-general.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenedor interno del modal */
+.contenedor-general .modal {
+    background-color: var(--principal-secundario);
+    border-radius: 12px;
+    max-width: 750px;
+    width: 100%;
+    max-height: 90vh;
+    position: relative;
+    display: block; 
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón cerrar */
+.contenedor-general .btn-cerrar-modal {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #aaa;
+    font-size: 18px;
+    font-weight: 700;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    font-family: Arial, sans-serif;
+    transition: all 0.2s ease;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.contenedor-general .btn-cerrar-modal:hover {
+    background: rgba(255, 70, 70, 0.2);
+    color: #ff6b6b;
+}
+
+/* Área de contenido con scroll */
+.contenedor-general .contenido-modal {
+    padding: 30px 35px 35px 35px;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+/* Scroll simple */
+.contenedor-general .contenido-modal::-webkit-scrollbar {
+    width: 5px;
+}
+
+.contenedor-general .contenido-modal::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.contenedor-general .contenido-modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ==============================================
+   RESPONSIVE
+   ============================================== */
+
+@media (max-width: 640px) {
+    .contenedor-general {
+        padding: 10px;
+    }
+    
+    .contenedor-general .contenido-modal {
+        padding: 22px 18px 25px 18px;
+    }
+    
+    .contenedor-general .btn-cerrar-modal {
+        top: 10px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .contenedor-general .contenido-modal {
+        padding: 18px 14px 20px 14px;
+    }
+    
+    .contenedor-general .btn-cerrar-modal {
+        top: 8px;
+        right: 8px;
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+    }
+}

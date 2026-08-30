@@ -1,9 +1,3 @@
-/*-- Importa estilos base --*/
-@import url(../css/globales/base.css);
-
-/*-- Importa estilos de include header --*/
-@import url(../css/globales/header.css);
-
 .sec-acerdade{
     width: 80%;
     margin: auto;

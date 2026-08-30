@@ -15,3 +15,7 @@ variables de entorno y estilos globales --*/
 
 /*-- Estilos del contenedor modal --*/
 @import url(./cuerpo/modal.css);
+
+/*-- Estilos del contenedor modal acerda de --*/
+@import url(./cuerpo/acercade.css);
+@import url(./cuerpo/modalgeneral.css);
