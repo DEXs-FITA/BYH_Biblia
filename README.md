@@ -1,7 +1,7 @@
-# B&H Libre: Proyecto Biblia
+# B+H Biblia
 ## Descripción
 
-B&H Libre es una Progressive Web App (PWA) diseñada específicamente para la proyección de versículos bíblicos durante reuniones, conferencias y servicios religiosos. La aplicación permite navegar rápidamente entre libros y capítulos, mostrando los versículos en un formato limpio y de alto contraste, ideal para su visualización en pantallas grandes y proyectores.
+B+H Biblia es una Progressive Web App (PWA) diseñada específicamente para la proyección de versículos bíblicos durante reuniones, conferencias y servicios religiosos. La aplicación permite navegar rápidamente entre libros y capítulos, mostrando los versículos en un formato limpio y de alto contraste, ideal para su visualización en pantallas grandes y proyectores.
 
 Optimizada para laptops, funciona en cualquier sistema operativo (Windows, Linux, macOS) y navegador web moderno. Gracias a su arquitectura PWA, puede instalarse localmente y operar sin conexión a internet.
 
@@ -107,56 +107,6 @@ Las contribuciones son bienvenidas:
 
 Antes de contribuir, revisa los [Issues](https://github.com/dexs-fita/BYH_Biblia/issues) para ver qué tareas están pendientes o si alguien ya está trabajando en algo similar.
 
-## Estructura del proyecto
-
-```text
-BYH_Biblia/
-├── css/
-│   ├── index.css
-│   ├── acercade.css
-│   ├── cuerpo/
-│   │   ├── versos.css
-│   │   └── modal.css
-│   └── globales/
-│       ├── nav.css
-│       ├── header.css
-│       └── base.css
-├── js/
-│   ├── index.js
-│   ├── acercade.js
-│   ├── nav/
-│   │   └── botones.js
-│   └── modulesBiblia/
-│       ├── modal.js
-│       ├── atajos.js
-│       └── lectorListas.js
-├── recursos/
-│   ├── imagenes/
-│   │   ├── bh_logo.svg
-│   │   ├── bh_logo_192.png
-│   │   ├── bh_logo_512.png
-│   │   └── colaboradores/
-│   │       └── logo_dexs_fita.png
-│   ├── versiones/
-│   │   ├── NVI.json
-│   │   └── RV1960.json
-│   └── fuentes/
-│       ├── Montserrat-Regular.ttf
-│       └── Montserrat-ExtraBold.ttf
-├── includes/
-│   └── header.html
-├── screenshots/
-│   ├── vista-principal.png
-│   ├── visor-ampliado.png
-│   └── modo-proyeccion.png
-├── index.html
-├── acercade.html
-├── manifest.json
-├── sw.js
-├── LICENSE
-└── README.md
-```
-
 ## Funcionamiento offline
 
 La aplicación cachea todos los recursos necesarios durante la primera carga, incluyendo el texto bíblico completo. Una vez instalada como PWA, no requiere conexión a internet para funcionar.
@@ -164,8 +114,8 @@ Si borras los datos de tu navegar esto tambien borrara los datos de B&H Biblia p
 
 ## Versiones de la Biblia incluidas
 
-- **Reina Valera 1960 (RV1960)** – incluida.
-- **Nueva Versión Internacional (NVI)** – próximamente.
+- **Reina Valera 1960 (RV1960)**
+- **Nueva Versión Internacional (NVI)** 
 
 ## Créditos
 
@@ -174,7 +124,7 @@ Si borras los datos de tu navegar esto tambien borrara los datos de B&H Biblia p
 
 ## Versión
 
-**Versión actual:** 2.1 (6 de julio de 2026)
+**Versión actual:** 4.0.2
 
 ## Licencia
 
@@ -196,7 +146,7 @@ Para más información sobre la licencia: [https://creativecommons.org/licenses/
 
 ## Contacto
 
-- **Email:** [fitadexs@gmail.com](mailto:fitadexs@gmail.com)
+- **Email:** [fitadexs@gmail.com](fitadexs@gmail.com)
 - **Desarrollador:** DEXs-FITA
 - **Ubicación:** Monterrey, México
 - **Repositorio:** [GitHub](https://github.com/dexs-fita/BYH_Biblia)

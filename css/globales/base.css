@@ -36,6 +36,12 @@
     --texto-noche: white;
 
     --resaltado: #0065d0;
+    --sombras: 
+    4px 0px 10px rgba(255, 255, 255, 0.755),
+    -1px 0px 0px rgba(255, 255, 255),
+    0px -4px 10px rgba(255, 255, 255, 0.755),
+    0px 1px 0px rgba(255, 255, 255);
+    --sombras-btn: 0px 0px 6px rgba(255, 255, 255, 0.8);
 }
 
 body{
@@ -62,4 +68,10 @@ body{
     --texto-noche: black;
 
     --resaltado: #FEE764;
-}
+        --sombras: 
+    4px 0px 10px rgba(0, 0, 0, 0.755),
+    -1px 0px 0px rgba(0, 0, 0),
+    0px -4px 10px rgba(0, 0, 0, 0.755),
+    0px 1px 0px rgba(0, 0, 0);
+    --sombras-btn: 0px 0px 6px rgba(0, 0, 0, 0.8);
+    }

@@ -1,5 +1,5 @@
 //=========================================
-// === FUNCONES DE BOTONES HEADER ===
+// === FUNCIONES DE BOTONES HEADER ===
 //=========================================
 
 export function toggleFullscreen() {
@@ -22,23 +22,6 @@ document.addEventListener('fullscreenchange', function() {
         }
     }
 });
-
-export function cerrarVentana() {
-    try {
-        window.close();
-    } catch (_) {}
-}
-
-export function inicializarBotonCerrar() {
-    const boton = document.querySelector('.btn-cerrar');
-    if (boton) {
-        boton.addEventListener('click', function(e) {
-            e.preventDefault();
-            cerrarVentana();
-        });
-        boton.title = 'Cerrar ventana';
-    }
-}
 
 export function initThemeToggle() {
     const toggle = document.getElementById('themeToggle');

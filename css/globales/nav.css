@@ -251,16 +251,14 @@
 /*---------------------------------*/
 /*-- Botones Cerrar y Maximizar --*/
 /*---------------------------------*/
-.maximizar-contenedor,
-.cerrar{
+.maximizar-contenedor{
     width: 50px;
     height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.btn-max-min,
-.btn-cerrar{
+.btn-max-min{
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -273,8 +271,7 @@
     cursor: pointer;
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
-.btn-max-min:hover,
-.btn-cerrar:hover{
+.btn-max-min:hover{
     color: white;
     background-color: red;
 }

@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c3e50">
-    <link rel="shortcut icon" href="./recursos/imagenes/bh_logo.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="./recursos/imagenes/mh_512.png" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./recursos/imagenes/mh_512.png">
     <link rel="stylesheet" href="./css/index.css">
-    <title>B&H Biblia</title>
+    <title>B+H Biblia</title>
 </head>
 
 <body>
@@ -18,10 +19,11 @@
     <header class="contenedor-header">
         <div class="centrar-header">
             <div class="logo-header">
-                <a href="index.html"><img class="logo-DF" src="recursos/imagenes/bh_logo.svg" alt="Logo B&H Libre"></a>
+                <img class="logo-DF" src="recursos/imagenes/mh_512.png" alt="Logo B&H Libre">
             </div>
             <div class="opciones-header">
                 <button class="btn-acercade" id="btnacercade">Acerca de</button>
+                <button class="btn-opciones" id="btnopciones">Opciones</button>
             </div>
         </div>
     </header>
@@ -34,7 +36,6 @@
         <div class="panel">
             <div class="caja-listas">
                 <div class="libros">
-                    <label for="libros"></label>
                     <div class="custom-select" id="libros-container">
                         <button type="button" id="libros-btn" class="libros-trigger" disabled>
                             Selecciona un libro
@@ -45,7 +46,6 @@
                     </div>
                 </div>
                 <div class="capitulos">
-                    <label for="capitulos"></label>
                     <div class="custom-select" id="capitulos-container">
                         <button type="button" id="capitulos-btn" class="capitulos-trigger" disabled>
                             Selecciona un capítulo
@@ -67,12 +67,8 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="maximizar-contenedor">
                     <button class="btn-max-min" id="fullscreenBtn">⛶</button>
-                </div>
-                <div class="cerrar">
-                    <button class="btn-cerrar">✕</button>
                 </div>
             </div>
         </div>
