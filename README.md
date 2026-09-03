@@ -1,4 +1,4 @@
-# B&H Libre: Proyecto Biblia
+# B+H Biblia
 ## Descripción
 
 B+H Biblia es una Progressive Web App (PWA) diseñada específicamente para la proyección de versículos bíblicos durante reuniones, conferencias y servicios religiosos. La aplicación permite navegar rápidamente entre libros y capítulos, mostrando los versículos en un formato limpio y de alto contraste, ideal para su visualización en pantallas grandes y proyectores.
