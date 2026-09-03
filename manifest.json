@@ -1,6 +1,6 @@
 {
-  "name": "B&H Biblia",
-  "short_name": "B&H Biblia",
+  "name": "B+H Biblia",
+  "short_name": "B+H Biblia",
   "description": "Una app Libre para todos",
   "start_url": "./",
   "display": "standalone",
