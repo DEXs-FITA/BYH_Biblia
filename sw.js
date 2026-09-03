@@ -1,4 +1,4 @@
-const CACHE_NAME = 'biblia-v4.0.2';
+const CACHE_NAME = 'biblia-v4.1.0';
 
 const urlsToCache = [
   '/',
