@@ -17,7 +17,7 @@ function obtenerDataIdDesdeHTML(rutaVersion) {
     
     const options = select.querySelectorAll('option');
     for (const option of options) {
-        if (option.value === rutaVersion || option.value.includes(rutaVersion.replace('/recursos/versiones/', '').replace('.json', ''))) {
+        if (option.value === rutaVersion || option.value.includes(rutaVersion.replace('recursos/versiones/', '').replace('.json', ''))) {
             return option.dataset.id || null;
         }
     }
