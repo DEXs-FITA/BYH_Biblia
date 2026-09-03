@@ -4,7 +4,7 @@
 
 const ESTADO = {
     versionActual: 'RV1960',
-    rutaVersion: '/recursos/versiones/RV1960.json',
+    rutaVersion: 'recursos/versiones/RV1960.json',
     versionCorto: 'RVR1960',
     fondoRuta: null
 };
