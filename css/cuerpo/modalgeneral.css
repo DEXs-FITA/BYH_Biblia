@@ -1,5 +1,5 @@
 /* ==============================================
-   MODAL GENERAL 
+   MODAL GENERAL - SOLO CONTENEDOR
    ============================================== */
 
 /* Contenedor overlay */
@@ -27,7 +27,7 @@
     visibility: visible;
 }
 
-/* Contenedor interno del modal */
+/* Contenedor interno del modal - SOLO CAJA CON SCROLL */
 .contenedor-general .modal {
     background-color: var(--principal-secundario);
     border-radius: 12px;
@@ -35,16 +35,34 @@
     width: 100%;
     max-height: 90vh;
     position: relative;
-    display: block; 
-    overflow: hidden;
+    display: block;
+    overflow-y: auto;  /* ← SCROLL CUANDO EL CONTENIDO ES GRANDE */
+    overflow-x: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    padding: 30px 35px 35px 35px;
 }
 
-/* Botón cerrar */
+/* Scrollbar estilizada (opcional) */
+.contenedor-general .modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contenedor-general .modal::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.contenedor-general .modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Botón cerrar - FIJO (no se mueve con el scroll) */
 .contenedor-general .btn-cerrar-modal {
-    position: absolute;
-    top: 12px;
-    right: 14px;
+    position: sticky;  /* ← CAMBIADO de absolute a sticky */
+    top: 0;
+    float: right;
+    margin-top: 0;
+    margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
     color: #aaa;
@@ -63,32 +81,12 @@
     line-height: 1;
     padding: 0;
     flex-shrink: 0;
+    backdrop-filter: blur(4px);
 }
 
 .contenedor-general .btn-cerrar-modal:hover {
-    background: rgba(255, 70, 70, 0.2);
-    color: #ff6b6b;
-}
-
-/* Área de contenido con scroll */
-.contenedor-general .contenido-modal {
-    padding: 30px 35px 35px 35px;
-    overflow-y: auto;
-    max-height: 80vh;
-}
-
-/* Scroll simple */
-.contenedor-general .contenido-modal::-webkit-scrollbar {
-    width: 5px;
-}
-
-.contenedor-general .contenido-modal::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-}
-
-.contenedor-general .contenido-modal::-webkit-scrollbar-track {
-    background: transparent;
+    background: red;
+    color: white;
 }
 
 /* ==============================================
@@ -100,13 +98,13 @@
         padding: 10px;
     }
     
-    .contenedor-general .contenido-modal {
+    .contenedor-general .modal {
         padding: 22px 18px 25px 18px;
     }
     
     .contenedor-general .btn-cerrar-modal {
-        top: 10px;
-        right: 10px;
+        top: 0;
+        right: 0;
         width: 28px;
         height: 28px;
         font-size: 16px;
@@ -114,13 +112,11 @@
 }
 
 @media (max-width: 400px) {
-    .contenedor-general .contenido-modal {
+    .contenedor-general .modal {
         padding: 18px 14px 20px 14px;
     }
     
     .contenedor-general .btn-cerrar-modal {
-        top: 8px;
-        right: 8px;
         width: 26px;
         height: 26px;
         font-size: 14px;
