@@ -7,7 +7,7 @@ const ESTADO = {
     rutaVersion: 'recursos/versiones/RV1960.json',
     versionCorto: 'RVR1960',
     fondoRuta: null,
-    colorFondo: null  // ← NUEVA VARIABLE PARA GUARDAR EL COLOR
+    colorFondo: null
 };
 
 const suscriptores = [];
@@ -42,16 +42,28 @@ function obtenerVersionDefault() {
 export function cargarVersionGuardada() {
     try {
         const guardada = localStorage.getItem('biblia-version');
+        console.log('Versión en localStorage:', guardada);
+        
         if (guardada) {
             const dataId = obtenerDataIdDesdeHTML(guardada);
             if (dataId) {
                 ESTADO.versionActual = guardada.split('/').pop().replace('.json', '');
                 ESTADO.rutaVersion = guardada;
                 ESTADO.versionCorto = dataId;
-                return { ...ESTADO };
+                console.log('Versión restaurada con data-id:', dataId);
+            } else {
+                // Fallback: usar el nombre del archivo
+                const nombreArchivo = guardada.split('/').pop().replace('.json', '');
+                ESTADO.versionActual = nombreArchivo;
+                ESTADO.rutaVersion = guardada;
+                ESTADO.versionCorto = nombreArchivo;
+                console.log('Fallback: versión restaurada como', nombreArchivo);
             }
+            return { ...ESTADO };
         }
-    } catch (_) {}
+    } catch (_) {
+        console.warn('Error cargando versión guardada');
+    }
 
     const defaultVersion = obtenerVersionDefault();
     if (defaultVersion) {
@@ -82,6 +94,7 @@ export function cambiarVersion(nuevaRuta) {
     ESTADO.versionCorto = dataId;
     
     localStorage.setItem('biblia-version', nuevaRuta);
+    console.log('Versión guardada en localStorage:', nuevaRuta);
     
     suscriptores.forEach(callback => callback({ ...ESTADO }));
 }
@@ -160,6 +173,5 @@ export function obtenerColorFondo() {
     return ESTADO.colorFondo;
 }
 
-// Cargar todo al inicio
 cargarFondo();
 cargarColorFondo();
