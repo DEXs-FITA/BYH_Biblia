@@ -151,13 +151,13 @@ class ImageLoader {
             try {
                 const response = await fetch(url);
                 if (response && response.ok) {
+                    const responseClone = response.clone();
                     const blob = await response.blob();
                     const objectUrl = URL.createObjectURL(blob);
                     this.imageCache.set(url, objectUrl);
                     imgElement.src = objectUrl;
                     this.markLoaded(imgElement);
-                    const cache = await caches.open(this.cacheName);
-                    cache.put(url, response);
+                    await cache.put(url, responseClone);
                     return;
                 }
             } catch (_) {}
