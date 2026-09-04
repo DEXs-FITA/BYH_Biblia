@@ -30,7 +30,7 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
 
         const btnZoomMas = modalContainer.querySelector('#zoom-mas');
-        const btnZoomMenos = modalContainer.querySelector('#zoom-menor');
+        const btnZoomMenos = modalContainer.querySelector('#zoom-menos');
         const btnAtras = modalContainer.querySelector('#atras');
         const btnSiguiente = modalContainer.querySelector('#siguiente');
 
@@ -154,20 +154,14 @@ async function cargarFondoPersistente() {
             return objectUrl;
         }
         
-        const response = await fetch(ruta);
-        if (response && response.ok) {
-            const responseClone = response.clone();
-            const blob = await response.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            fondoCacheado = objectUrl;
-            cache.put(ruta, responseClone);
-            return objectUrl;
-        }
+        // Si no está en caché, no hacer fetch (el SW ya debería tenerla)
+        console.warn('Fondo no encontrado en caché:', ruta);
+        return null;
     } catch (error) {
         console.warn('Error cargando fondo:', error);
         fondoCacheado = null;
+        return null;
     }
-    return null;
 }
 
 function aplicarFondoSinParpadeo() {
@@ -235,6 +229,3 @@ export function obtenerFondoSeleccionado() {
 }
 
 cargarFondo();
-setTimeout(() => {
-    cargarFondoPersistente();
-}, 500);

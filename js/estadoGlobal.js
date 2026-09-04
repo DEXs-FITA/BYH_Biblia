@@ -7,7 +7,8 @@ const ESTADO = {
     rutaVersion: 'recursos/versiones/RV1960.json',
     versionCorto: 'RVR1960',
     fondoRuta: null,
-    colorFondo: null
+    colorFondo: null,
+    cacheVersion: 'v5.0.0'
 };
 
 const suscriptores = [];
@@ -42,7 +43,7 @@ function obtenerVersionDefault() {
 export function cargarVersionGuardada() {
     try {
         const guardada = localStorage.getItem('biblia-version');
-        console.log('Versión en localStorage:', guardada);
+        //console.log('Versión en localStorage:', guardada);
         
         if (guardada) {
             const dataId = obtenerDataIdDesdeHTML(guardada);
@@ -52,7 +53,6 @@ export function cargarVersionGuardada() {
                 ESTADO.versionCorto = dataId;
                 console.log('Versión restaurada con data-id:', dataId);
             } else {
-                // Fallback: usar el nombre del archivo
                 const nombreArchivo = guardada.split('/').pop().replace('.json', '');
                 ESTADO.versionActual = nombreArchivo;
                 ESTADO.rutaVersion = guardada;
@@ -171,6 +171,10 @@ export function obtenerColorFondo() {
         cargarColorFondo();
     }
     return ESTADO.colorFondo;
+}
+
+export function obtenerVersionCache() {
+    return ESTADO.cacheVersion;
 }
 
 cargarFondo();

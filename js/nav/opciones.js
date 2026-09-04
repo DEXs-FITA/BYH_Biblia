@@ -6,13 +6,19 @@ import { abrirModal } from '../modulesBiblia/modalGeneral.js';
 import { cambiarVersion, guardarFondo, obtenerFondo, cargarVersionGuardada, obtenerColorFondo, guardarColorFondo } from '../estadoGlobal.js';
 import { seleccionarFondo, aplicarFondo } from '../modulesBiblia/modal.js';
 import imageLoader from '../imageLoader.js';
+import { mostrarNotificacion } from '../notificaciones.js';
+
+let modalOpcionesAbierto = false;
+let observerInicializado = false;
 
 export function inicializarOpciones() {
     const btn = document.getElementById('btnopciones');
     if (btn) {
         btn.addEventListener('click', () => {
             abrirModal('includes/opciones.html');
-            setTimeout(configurarOpcionesDelModal, 500);
+            modalOpcionesAbierto = true;
+            // Usar MutationObserver en lugar de setTimeout
+            observarModalOpciones();
         });
     }
 
@@ -28,6 +34,42 @@ export function inicializarOpciones() {
             }
         }
     });
+}
+
+function observarModalOpciones() {
+    if (observerInicializado) return;
+    
+    const observer = new MutationObserver(() => {
+        const modal = document.querySelector('.contenedor-general.activo');
+        if (modal && modalOpcionesAbierto) {
+            configurarOpcionesDelModal();
+            observer.disconnect();
+            observerInicializado = false;
+            modalOpcionesAbierto = false;
+        }
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
+    observerInicializado = true;
+    
+    // Fallback: si después de 2 segundos no se detecta, intentar configurar
+    setTimeout(() => {
+        if (observerInicializado) {
+            const modal = document.querySelector('.contenedor-general.activo');
+            if (modal) {
+                configurarOpcionesDelModal();
+                observer.disconnect();
+                observerInicializado = false;
+                modalOpcionesAbierto = false;
+            }
+        }
+    }, 2000);
 }
 
 function configurarOpcionesDelModal() {
@@ -56,10 +98,7 @@ function cargarImagenesOpciones() {
 function configurarMiniaturas() {
     const items = document.querySelectorAll('.fondo-item');
     
-    if (items.length === 0) {
-        setTimeout(configurarMiniaturas, 300);
-        return;
-    }
+    if (items.length === 0) return;
     
     items.forEach(item => {
         item.removeEventListener('click', manejarClickMiniatura);
@@ -145,57 +184,10 @@ function configurarBotonFondo() {
     if (btn) {
         btn.removeEventListener('click', manejarClickCambiarFondo);
         btn.addEventListener('click', manejarClickCambiarFondo);
-    } else {
-        setTimeout(configurarBotonFondo, 300);
     }
 }
 
 function manejarClickCambiarFondo() {
     aplicarFondo();
     mostrarNotificacion('Fondo cambiado correctamente');
-}
-
-function mostrarNotificacion(mensaje) {
-    const notificacionExistente = document.querySelector('.notificacion-flotante');
-    if (notificacionExistente) {
-        notificacionExistente.remove();
-    }
-
-    const notificacion = document.createElement('div');
-    notificacion.className = 'notificacion-flotante';
-    notificacion.textContent = mensaje;
-    
-    Object.assign(notificacion.style, {
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: '#2d2d2d',
-        color: '#ffffff',
-        padding: '12px 24px',
-        borderRadius: '8px',
-        fontFamily: 'Montserrat, sans-serif',
-        fontSize: '14px',
-        zIndex: '9999',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-        opacity: '0',
-        transition: 'opacity 0.3s ease-in-out',
-        maxWidth: '90%',
-        textAlign: 'center'
-    });
-
-    document.body.appendChild(notificacion);
-
-    requestAnimationFrame(() => {
-        notificacion.style.opacity = '1';
-    });
-
-    setTimeout(() => {
-        notificacion.style.opacity = '0';
-        setTimeout(() => {
-            if (notificacion.parentNode) {
-                notificacion.remove();
-            }
-        }, 300);
-    }, 3000);
 }

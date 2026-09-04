@@ -1,20 +1,17 @@
 // Service Worker para B+H Biblia
 // Estrategia: descarga completa durante la instalacion
 
-const CACHE_VERSION = 'biblia-v5.0.0';
+const CACHE_VERSION = 'biblia-v5.1.2';
 const STATIC_CACHE = 'static-' + CACHE_VERSION;
 const IMAGE_CACHE = 'images-' + CACHE_VERSION;
 const DATA_CACHE = 'data-' + CACHE_VERSION;
-
-// ==========================================
-// TODOS LOS ARCHIVOS (descarga completa)
-// ==========================================
 
 const ALL_ASSETS = [
   // HTML
   '/',
   '/index.html',
-  '/manifest.json',
+  '/includes/acercade.html',
+  '/includes/opciones.html',
   
   // CSS
   '/css/index.css',
@@ -32,6 +29,7 @@ const ALL_ASSETS = [
   '/js/estadoGlobal.js',
   '/js/imageLoader.js',
   '/js/progressBar.js',
+  '/js/notificaciones.js',
   
   // JS - Modulos Biblia
   '/js/modulesBiblia/atajos.js',
@@ -47,7 +45,8 @@ const ALL_ASSETS = [
   '/js/nav/botones.js',
   '/js/nav/opciones.js',
   
-  // JSON (versiones biblicas)
+  // JSON
+  '/manifest.json',
   '/recursos/versiones/NVI.json',
   '/recursos/versiones/RV1960.json',
   
@@ -55,7 +54,7 @@ const ALL_ASSETS = [
   '/recursos/fuentes/Montserrat-ExtraBold.ttf',
   '/recursos/fuentes/Montserrat-Regular.ttf',
   
-  // Imagenes (todas)
+  // Imagenes (8 archivos)
   '/recursos/imagenes/mh_512.png',
   '/recursos/imagenes/mh_512.svg',
   '/recursos/imagenes/colaboradores/logo_dexs_fita.png',
@@ -64,31 +63,35 @@ const ALL_ASSETS = [
   '/recursos/imagenes/fondos/imagen3.webp',
   '/recursos/imagenes/fondos/imagen4.webp',
   '/recursos/imagenes/fondos/imagen5.webp',
-  '/recursos/imagenes/fondos/imagen6.webp',
+  '/recursos/imagenes/fondos/imagen6.webp'
 ];
-
-// ==========================================
-// INSTALACION - DESCARGAR TODO
-// ==========================================
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
     (async function() {
-      var cache = await caches.open(STATIC_CACHE);
-      var imageCache = await caches.open(IMAGE_CACHE);
-      var dataCache = await caches.open(DATA_CACHE);
+      const cache = await caches.open(STATIC_CACHE);
+      const imageCache = await caches.open(IMAGE_CACHE);
+      const dataCache = await caches.open(DATA_CACHE);
       
-      console.log('Descargando todos los archivos...');
+      console.log('[SW] Iniciando descarga de ' + ALL_ASSETS.length + ' archivos...');
       
-      var total = ALL_ASSETS.length;
-      var completados = 0;
+      let total = ALL_ASSETS.length;
+      let completados = 0;
+      let clientes = null;
       
-      for (var i = 0; i < ALL_ASSETS.length; i++) {
-        var url = ALL_ASSETS[i];
+      try {
+        clientes = await self.clients.matchAll({
+          includeUncontrolled: true,
+          type: 'window'
+        });
+      } catch (_) {}
+      
+      for (let i = 0; i < ALL_ASSETS.length; i++) {
+        let url = ALL_ASSETS[i];
         try {
-          var response = await fetch(url);
+          let response = await fetch(url);
           if (response && response.ok) {
-            var responseClone = response.clone();
+            let responseClone = response.clone();
             
             if (url.match(/\.(webp|png|jpg|jpeg|gif|svg|ico)$/i)) {
               await imageCache.put(url, response);
@@ -99,34 +102,51 @@ self.addEventListener('install', function(event) {
             }
             
             completados++;
-            console.log(completados + '/' + total + ': ' + url);
+            let percent = Math.round((completados / total) * 100);
             
-            var percent = Math.round((completados / total) * 100);
-            self.clients.matchAll().then(function(clients) {
-              clients.forEach(function(client) {
-                client.postMessage({
-                  type: 'PROGRESS',
-                  progress: percent,
-                  loaded: completados,
-                  total: total
-                });
+            if (clientes && clientes.length > 0) {
+              clientes.forEach(function(client) {
+                try {
+                  client.postMessage({
+                    type: 'PROGRESS',
+                    progress: percent,
+                    loaded: completados,
+                    total: total
+                  });
+                } catch (_) {}
               });
-            });
+            }
+            
+            if (completados % 5 === 0 || completados === total) {
+              console.log('[SW] ' + completados + '/' + total + ' (' + percent + '%)');
+            }
+          } else {
+            console.warn('[SW] Fallo: ' + url + ' (status ' + (response ? response.status : 'sin respuesta') + ')');
           }
         } catch (error) {
-          console.warn('Fallo: ' + url, error);
+          console.warn('[SW] Error en: ' + url, error);
         }
       }
       
-      console.log('Descarga completa: ' + completados + '/' + total + ' archivos');
+      console.log('[SW] Descarga completa: ' + completados + '/' + total + ' archivos');
+      
+      if (clientes && clientes.length > 0) {
+        clientes.forEach(function(client) {
+          try {
+            client.postMessage({
+              type: 'INSTALL_COMPLETE',
+              progress: 100,
+              loaded: completados,
+              total: total
+            });
+          } catch (_) {}
+        });
+      }
+      
       await self.skipWaiting();
     })()
   );
 });
-
-// ==========================================
-// ACTIVACION
-// ==========================================
 
 self.addEventListener('activate', function(event) {
   event.waitUntil(
@@ -135,10 +155,10 @@ self.addEventListener('activate', function(event) {
         return Promise.all(
           cacheNames
             .filter(function(name) {
-              return name.indexOf('biblia-v') === -1;
+              return name.indexOf('biblia-v') !== -1 && name !== STATIC_CACHE && name !== IMAGE_CACHE && name !== DATA_CACHE;
             })
             .map(function(name) {
-              console.log('Eliminando cache antiguo: ' + name);
+              console.log('[SW] Eliminando caché antiguo: ' + name);
               return caches.delete(name);
             })
         );
@@ -149,36 +169,19 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-// ==========================================
-// INTERCEPTAR PETICIONES
-// ==========================================
-
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
         if (response) {
-          var responseClone = response.clone();
-          
-          fetch(event.request)
-            .then(function(freshResponse) {
-              if (freshResponse && freshResponse.ok) {
-                var cache = caches.open(STATIC_CACHE);
-                cache.then(function(c) {
-                  c.put(event.request, freshResponse);
-                });
-              }
-            })
-            .catch(function() {});
-          
-          return responseClone;
+          return response;
         }
         
         return fetch(event.request)
           .then(function(response) {
             if (response && response.ok) {
-              var responseClone = response.clone();
-              var cache = caches.open(STATIC_CACHE);
+              let responseClone = response.clone();
+              let cache = caches.open(STATIC_CACHE);
               cache.then(function(c) {
                 c.put(event.request, responseClone);
               });
