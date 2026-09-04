@@ -8,62 +8,54 @@ const DATA_CACHE = 'data-' + CACHE_VERSION;
 
 const ALL_ASSETS = [
   // HTML
-  '/',
-  '/index.html',
-  '/includes/acercade.html',
-  '/includes/opciones.html',
+    'index.html',
+  'includes/acercade.html',
+  'includes/opciones.html',
   
-  // CSS
-  '/css/index.css',
-  '/css/globales/base.css',
-  '/css/globales/header.css',
-  '/css/globales/nav.css',
-  '/css/cuerpo/acercade.css',
-  '/css/cuerpo/modal.css',
-  '/css/cuerpo/modalgeneral.css',
-  '/css/cuerpo/opciones.css',
-  '/css/cuerpo/versos.css',
+  'css/index.css',
+  'css/globales/base.css',
+  'css/globales/header.css',
+  'css/globales/nav.css',
+  'css/cuerpo/acercade.css',
+  'css/cuerpo/modal.css',
+  'css/cuerpo/modalgeneral.css',
+  'css/cuerpo/opciones.css',
+  'css/cuerpo/versos.css',
   
-  // JS - Principal
-  '/js/index.js',
-  '/js/estadoGlobal.js',
-  '/js/imageLoader.js',
-  '/js/progressBar.js',
-  '/js/notificaciones.js',
+  'js/index.js',
+  'js/estadoGlobal.js',
+  'js/imageLoader.js',
+  'js/progressBar.js',
+  'js/notificaciones.js',
   
-  // JS - Modulos Biblia
-  '/js/modulesBiblia/atajos.js',
-  '/js/modulesBiblia/cargador.js',
-  '/js/modulesBiblia/lectorListas.js',
-  '/js/modulesBiblia/modal.js',
-  '/js/modulesBiblia/modalGeneral.js',
-  '/js/modulesBiblia/navegador.js',
-  '/js/modulesBiblia/renderizador.js',
+  'js/modulesBiblia/atajos.js',
+  'js/modulesBiblia/cargador.js',
+  'js/modulesBiblia/lectorListas.js',
+  'js/modulesBiblia/modal.js',
+  'js/modulesBiblia/modalGeneral.js',
+  'js/modulesBiblia/navegador.js',
+  'js/modulesBiblia/renderizador.js',
   
-  // JS - Nav
-  '/js/nav/acercade.js',
-  '/js/nav/botones.js',
-  '/js/nav/opciones.js',
+  'js/nav/acercade.js',
+  'js/nav/botones.js',
+  'js/nav/opciones.js',
   
-  // JSON
-  '/manifest.json',
-  '/recursos/versiones/NVI.json',
-  '/recursos/versiones/RV1960.json',
+  'manifest.json',
+  'recursos/versiones/NVI.json',
+  'recursos/versiones/RV1960.json',
   
-  // Fuentes
-  '/recursos/fuentes/Montserrat-ExtraBold.ttf',
-  '/recursos/fuentes/Montserrat-Regular.ttf',
+  'recursos/fuentes/Montserrat-ExtraBold.ttf',
+  'recursos/fuentes/Montserrat-Regular.ttf',
   
-  // Imagenes (8 archivos)
-  '/recursos/imagenes/mh_512.png',
-  '/recursos/imagenes/mh_512.svg',
-  '/recursos/imagenes/colaboradores/logo_dexs_fita.png',
-  '/recursos/imagenes/fondos/imagen1.webp',
-  '/recursos/imagenes/fondos/imagen2.webp',
-  '/recursos/imagenes/fondos/imagen3.webp',
-  '/recursos/imagenes/fondos/imagen4.webp',
-  '/recursos/imagenes/fondos/imagen5.webp',
-  '/recursos/imagenes/fondos/imagen6.webp'
+  'recursos/imagenes/mh_512.png',
+  'recursos/imagenes/mh_512.svg',
+  'recursos/imagenes/colaboradores/logo_dexs_fita.png',
+  'recursos/imagenes/fondos/imagen1.webp',
+  'recursos/imagenes/fondos/imagen2.webp',
+  'recursos/imagenes/fondos/imagen3.webp',
+  'recursos/imagenes/fondos/imagen4.webp',
+  'recursos/imagenes/fondos/imagen5.webp',
+  'recursos/imagenes/fondos/imagen6.webp'
 ];
 
 self.addEventListener('install', function(event) {
