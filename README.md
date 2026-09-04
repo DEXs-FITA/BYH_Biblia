@@ -124,7 +124,7 @@ Si borras los datos de tu navegar esto tambien borrara los datos de B&H Biblia p
 
 ## Versión
 
-**Versión actual:** 4.5.0
+**Versión actual:** 5.1.2
 
 ## Licencia
 

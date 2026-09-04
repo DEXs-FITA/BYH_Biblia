@@ -3,13 +3,17 @@
 // =======================================================
 
 let modoNavegacionVersiculos = false;
+let contenedorVersosCache = null;
 
 export function inicializarAtajos() {
     document.addEventListener('keydown', manejarAtajos);
+    // Cachear referencia al contenedor
+    contenedorVersosCache = document.querySelector('.versos');
 }
 
 export function limpiarAtajos() {
     document.removeEventListener('keydown', manejarAtajos);
+    contenedorVersosCache = null;
 }
 
 function manejarAtajos(e) {
@@ -22,12 +26,16 @@ function manejarAtajos(e) {
             return;
         }
         modoNavegacionVersiculos = !modoNavegacionVersiculos;
-        const contenedorVersos = document.querySelector('.versos');
+        
+        if (!contenedorVersosCache) {
+            contenedorVersosCache = document.querySelector('.versos');
+        }
+        
         if (modoNavegacionVersiculos) {
-            const primerVersiculo = contenedorVersos?.querySelector('.versiculo');
+            const primerVersiculo = contenedorVersosCache?.querySelector('.versiculo');
             if (primerVersiculo) primerVersiculo.focus();
         } else {
-            if (document.activeElement && contenedorVersos?.contains(document.activeElement)) {
+            if (document.activeElement && contenedorVersosCache?.contains(document.activeElement)) {
                 document.activeElement.blur();
             }
         }
@@ -66,11 +74,14 @@ function manejarAtajos(e) {
 
     // MODO NAVEGACION VERSICULOS
     if (modoNavegacionVersiculos) {
-        const contenedor = document.querySelector('.versos');
+        if (!contenedorVersosCache) {
+            contenedorVersosCache = document.querySelector('.versos');
+        }
+        
         const focusedEl = document.activeElement;
 
-        if (contenedor && contenedor.contains(focusedEl)) {
-            const versiculos = [...contenedor.querySelectorAll('.versiculo')];
+        if (contenedorVersosCache && contenedorVersosCache.contains(focusedEl)) {
+            const versiculos = [...contenedorVersosCache.querySelectorAll('.versiculo')];
 
             if (e.key === 'Enter') {
                 e.preventDefault();

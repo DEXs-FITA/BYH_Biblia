@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicializar lazy loading para imágenes
     initLazyLoading();
+    
+    // La barra de progreso se conecta automáticamente al SW
+    console.log('Barra de progreso lista para mostrar descarga offline');
 });
 
 // ============================================
@@ -37,14 +40,6 @@ function initLazyLoading() {
     const images = document.querySelectorAll('img[data-src]');
     
     if (images.length > 0) {
-        imageLoader.onProgress((percentage, loaded, total) => {
-            progressBar.update(percentage, loaded, total);
-        });
-        
-        imageLoader.onComplete(() => {
-            console.log('Imagenes cargadas completamente');
-        });
-        
         imageLoader.registerImages(images);
     }
 }
