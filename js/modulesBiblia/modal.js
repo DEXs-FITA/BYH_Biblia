@@ -2,11 +2,15 @@
 // === MODAL VERSICULOS ===
 //=========================================
 
-import { obtenerEstado, guardarFondo, cargarFondo, obtenerFondo } from '../estadoGlobal.js';
+import { obtenerEstado, guardarFondo, cargarFondo, obtenerFondo, obtenerColorFondo } from '../estadoGlobal.js';
+import imageLoader from '../imageLoader.js';
 
 let modalContainer = null;
 let contextoActual = null;
 let zoomLevel = 3;
+let fondoActualUrl = null;
+let fondoPrecargado = null;
+let fondoCacheado = null;
 
 export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versiculos, indice }) {
     if (!modalContainer) {
@@ -26,7 +30,7 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
 
         const btnZoomMas = modalContainer.querySelector('#zoom-mas');
-        const btnZoomMenos = modalContainer.querySelector('#zoom-menos');
+        const btnZoomMenos = modalContainer.querySelector('#zoom-menor');
         const btnAtras = modalContainer.querySelector('#atras');
         const btnSiguiente = modalContainer.querySelector('#siguiente');
 
@@ -38,10 +42,11 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
 
     contextoActual = { libro, capitulo, versiculos, indice };
     actualizarContenidoModal();
+    
+    aplicarFondoSinParpadeo();
+    
     modalContainer.classList.add('visible');
     document.body.style.overflow = 'hidden';
-    
-    setTimeout(() => aplicarFondo(), 100);
 }
 
 function actualizarContenidoModal() {
@@ -119,23 +124,113 @@ function navegar(direccion) {
 export function seleccionarFondo(tipo, ruta) {
     const rutaGuardar = (tipo === 'imagen') ? ruta : null;
     guardarFondo(rutaGuardar);
+    fondoCacheado = null;
+    fondoPrecargado = null;
+    if (fondoActualUrl) {
+        URL.revokeObjectURL(fondoActualUrl);
+        fondoActualUrl = null;
+    }
 }
 
-export function aplicarFondo() {
+async function cargarFondoPersistente() {
+    const ruta = obtenerFondo();
+    if (!ruta) {
+        fondoCacheado = null;
+        return null;
+    }
+    
+    if (fondoCacheado) {
+        return fondoCacheado;
+    }
+    
+    try {
+        const cache = await caches.open('images-biblia-v5.0.0');
+        const cachedResponse = await cache.match(ruta);
+        
+        if (cachedResponse) {
+            const blob = await cachedResponse.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            fondoCacheado = objectUrl;
+            return objectUrl;
+        }
+        
+        const response = await fetch(ruta);
+        if (response && response.ok) {
+            const responseClone = response.clone();
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            fondoCacheado = objectUrl;
+            cache.put(ruta, responseClone);
+            return objectUrl;
+        }
+    } catch (error) {
+        console.warn('Error cargando fondo:', error);
+        fondoCacheado = null;
+    }
+    return null;
+}
+
+function aplicarFondoSinParpadeo() {
     let contenedor = modalContainer ? modalContainer.querySelector('.contenedor-modal') : null;
     if (!contenedor) contenedor = document.querySelector('.contenedor-modal');
     if (!contenedor) return;
     
     const ruta = obtenerFondo();
+    const color = obtenerColorFondo();
     
+    // Verificar si hay un color guardado
+    if (color && !ruta) {
+        contenedor.style.backgroundImage = 'none';
+        contenedor.style.backgroundColor = color;
+        if (fondoActualUrl) {
+            URL.revokeObjectURL(fondoActualUrl);
+            fondoActualUrl = null;
+        }
+        fondoCacheado = null;
+        return;
+    }
+    
+    // Si hay imagen
     if (ruta) {
-        contenedor.style.backgroundImage = 'url(' + ruta + ')';
-        contenedor.style.backgroundSize = 'cover';
-        contenedor.style.backgroundPosition = 'center';
+        if (fondoCacheado) {
+            contenedor.style.backgroundImage = 'url(' + fondoCacheado + ')';
+            contenedor.style.backgroundSize = 'cover';
+            contenedor.style.backgroundPosition = 'center';
+            if (fondoActualUrl && fondoActualUrl !== fondoCacheado) {
+                URL.revokeObjectURL(fondoActualUrl);
+            }
+            fondoActualUrl = fondoCacheado;
+            return;
+        }
+        
+        contenedor.style.backgroundColor = 'var(--principal-primario)';
+        contenedor.style.backgroundImage = 'none';
+        
+        cargarFondoPersistente().then((objectUrl) => {
+            if (objectUrl) {
+                contenedor.style.backgroundImage = 'url(' + objectUrl + ')';
+                contenedor.style.backgroundSize = 'cover';
+                contenedor.style.backgroundPosition = 'center';
+                if (fondoActualUrl) {
+                    URL.revokeObjectURL(fondoActualUrl);
+                }
+                fondoActualUrl = objectUrl;
+            }
+        });
     } else {
+        // Color por defecto
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = 'var(--principal-primario)';
+        if (fondoActualUrl) {
+            URL.revokeObjectURL(fondoActualUrl);
+            fondoActualUrl = null;
+        }
+        fondoCacheado = null;
     }
+}
+
+export function aplicarFondo() {
+    aplicarFondoSinParpadeo();
 }
 
 export function obtenerFondoSeleccionado() {
@@ -143,3 +238,6 @@ export function obtenerFondoSeleccionado() {
 }
 
 cargarFondo();
+setTimeout(() => {
+    cargarFondoPersistente();
+}, 500);

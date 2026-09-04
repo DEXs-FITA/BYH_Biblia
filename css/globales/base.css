@@ -1,12 +1,12 @@
 /* RESET BASICO */
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 /* FUENTES GLOBALES */
-@font-face{
+@font-face {
     font-family: 'normalr';
     src: url('../../recursos/fuentes/Montserrat-Regular.ttf') format('truetype');
     font-weight: normal;
@@ -14,7 +14,7 @@
     font-display: swap;
 }
 
-@font-face{
+@font-face {
     font-family: 'extrar';
     src: url('../../recursos/fuentes/Montserrat-ExtraBold.ttf') format('truetype');
     font-weight: bold;
@@ -23,7 +23,7 @@
 }
 
 /* VARIABLES GOLBALES */
-:root{
+:root {
     /*Colores modo Oscuro*/
     --principal-primario: #E7E9E7;
     --principal-secundario: #cdcecd;
@@ -36,15 +36,15 @@
     --texto-noche: white;
 
     --resaltado: #0065d0;
-    --sombras: 
-    4px 0px 10px rgba(255, 255, 255, 0.755),
-    -1px 0px 0px rgba(255, 255, 255),
-    0px -4px 10px rgba(255, 255, 255, 0.755),
-    0px 1px 0px rgba(255, 255, 255);
+    --sombras:
+        4px 0px 10px rgba(255, 255, 255, 0.755),
+        -1px 0px 0px rgba(255, 255, 255),
+        0px -4px 10px rgba(255, 255, 255, 0.755),
+        0px 1px 0px rgba(255, 255, 255);
     --sombras-btn: 0px 0px 6px rgba(255, 255, 255, 0.8);
 }
 
-body{
+body {
     width: 100%;
     min-height: 100vh;
     background-color: var(--principal-primario);
@@ -52,10 +52,56 @@ body{
     color: var(--texto-primario);
 }
 
+/* ============================================
+   BARRA DE PROGRESO PARA DESCARGA DE IMÁGENES
+   ============================================ */
+#progress-container {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--principal-primario);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+#progress-container.visible {
+    opacity: 1;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--resaltado), #4a9eff);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 12px rgba(0, 101, 208, 0.3);
+}
+
+#progress-text {
+    position: absolute;
+    right: 16px;
+    top: -18px;
+    font-size: 10px;
+    color: var(--texto-primario);
+    font-family: 'normalr', Montserrat, sans-serif;
+    font-weight: 400;
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+    background: var(--principal-primario);
+    padding: 2px 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
 /*============================================*/
 /*-- DARK MODE --*/
 /*============================================*/
-:root.dark{
+:root.dark {
     /*Colores modo Oscuro*/
     --principal-primario: #2E2E2E;
     --principal-secundario: #474A4F;
@@ -68,10 +114,10 @@ body{
     --texto-noche: black;
 
     --resaltado: #FEE764;
-        --sombras: 
-    4px 0px 10px rgba(0, 0, 0, 0.755),
-    -1px 0px 0px rgba(0, 0, 0),
-    0px -4px 10px rgba(0, 0, 0, 0.755),
-    0px 1px 0px rgba(0, 0, 0);
+    --sombras:
+        4px 0px 10px rgba(0, 0, 0, 0.755),
+        -1px 0px 0px rgba(0, 0, 0),
+        0px -4px 10px rgba(0, 0, 0, 0.755),
+        0px 1px 0px rgba(0, 0, 0);
     --sombras-btn: 0px 0px 6px rgba(0, 0, 0, 0.8);
-    }
+}

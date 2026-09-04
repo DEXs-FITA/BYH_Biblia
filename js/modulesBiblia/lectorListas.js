@@ -7,22 +7,23 @@
 // - Punto de entrada principal para la funcionalidad de lectura
 
 import { cargarVersion, obtenerDatos } from './cargador.js';
-import { renderizarVersiculos, limpiarVersiculos } from './renderizador.js';
+import { renderizarVersiculos, limpiarVersiculos, initDelegacionVersiculos } from './renderizador.js';
 import { inicializarNavegacion, obtenerSeleccion } from './navegador.js';
 import { cargarVersionGuardada, suscribirCambioVersion } from '../estadoGlobal.js';
 
-// Estado local
 let navegador = null;
 
 export function inicializarBiblia() {
-    // Inicializar navegador
     navegador = inicializarNavegacion();
 
-    // Cargar versión guardada
+    const contenedorVersos = document.querySelector('.versos');
+    if (contenedorVersos) {
+        initDelegacionVersiculos(contenedorVersos);
+    }
+
     const estado = cargarVersionGuardada();
     cargarVersionYRenderizar(estado.rutaVersion);
 
-    // Suscribirse a cambios de versión
     suscribirCambioVersion((nuevoEstado) => {
         cargarVersionYRenderizar(nuevoEstado.rutaVersion);
     });
@@ -33,14 +34,12 @@ function cargarVersionYRenderizar(ruta) {
     
     cargarVersion(ruta)
         .then(() => {
-            // Intentar restaurar selección anterior
             const seleccion = obtenerSeleccion();
             const restaurado = navegador.restaurarSeleccion(
                 seleccion.libroIndex,
                 seleccion.capituloNum
             );
 
-            // Si no se pudo restaurar, cargar libros
             if (!restaurado) {
                 navegador.cargarLibros();
             }
@@ -57,7 +56,6 @@ function cargarVersionYRenderizar(ruta) {
         });
 }
 
-// Función auxiliar para notificaciones
 function mostrarNotificacion(mensaje) {
     const notificacionExistente = document.querySelector('.notificacion-flotante');
     if (notificacionExistente) {

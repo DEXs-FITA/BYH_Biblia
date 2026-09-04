@@ -16,21 +16,19 @@ import {
     renderizarCapitulos,
     renderizarVersiculos,
     limpiarVersiculos,
-    marcarSeleccionado
+    marcarSeleccionado,
+    initDelegacionVersiculos
 } from './renderizador.js';
 
-// Estado de navegación
 const estadoNavegacion = {
     libroIndex: null,
     capituloNum: null
 };
 
-// Obtener el libro y capítulo seleccionado actualmente
 export function obtenerSeleccion() {
     return { ...estadoNavegacion };
 }
 
-// Configurar la navegación en el DOM
 export function inicializarNavegacion() {
     const librosBtn = document.getElementById('libros-btn');
     const librosPanel = document.getElementById('libros-panel');
@@ -40,7 +38,10 @@ export function inicializarNavegacion() {
     const capitulosContainer = document.getElementById('capitulos-container');
     const contenedorVersos = document.querySelector('.versos');
 
-    // Función para cargar libros
+    if (contenedorVersos) {
+        initDelegacionVersiculos(contenedorVersos);
+    }
+
     function cargarLibros() {
         if (!hayDatosCargados()) {
             librosBtn.textContent = 'Cargando...';
@@ -53,7 +54,6 @@ export function inicializarNavegacion() {
         });
     }
 
-    // Función para seleccionar un libro
     function seleccionarLibro(index, nombre) {
         estadoNavegacion.libroIndex = index;
         estadoNavegacion.capituloNum = null;
@@ -64,7 +64,6 @@ export function inicializarNavegacion() {
         marcarSeleccionado('.libro-opcion', index);
         cerrarPaneles();
 
-        // Cargar capítulos
         if (hayDatosCargados()) {
             renderizarCapitulos(index, capitulosPanel, (capituloNum) => {
                 seleccionarCapitulo(capituloNum);
@@ -73,7 +72,6 @@ export function inicializarNavegacion() {
         }
     }
 
-    // Función para seleccionar un capítulo
     function seleccionarCapitulo(capituloNum) {
         estadoNavegacion.capituloNum = capituloNum;
         capitulosBtn.textContent = `${capituloNum}`;
@@ -81,7 +79,6 @@ export function inicializarNavegacion() {
         marcarSeleccionado('.capitulo-opcion', capituloNum);
         cerrarPaneles();
 
-        // Renderizar versículos
         if (hayDatosCargados()) {
             renderizarVersiculos(
                 estadoNavegacion.libroIndex,
@@ -91,7 +88,6 @@ export function inicializarNavegacion() {
         }
     }
 
-    // Cerrar paneles desplegables
     function cerrarPaneles() {
         librosPanel.classList.remove('open');
         librosBtn.classList.remove('active');
@@ -99,9 +95,6 @@ export function inicializarNavegacion() {
         capitulosBtn.classList.remove('active');
     }
 
-    // === EVENTOS ===
-
-    // Botón de libros
     librosBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (librosBtn.disabled) return;
@@ -115,7 +108,6 @@ export function inicializarNavegacion() {
         if (!estaAbierto) {
             capitulosPanel.classList.remove('open');
             capitulosBtn.classList.remove('active');
-            // Recargar libros por si acaso
             renderizarLibros(librosPanel, (index, nombre) => {
                 seleccionarLibro(index, nombre);
             });
@@ -124,19 +116,16 @@ export function inicializarNavegacion() {
         librosBtn.classList.toggle('active', !estaAbierto);
     });
 
-    // Botón de capítulos
     capitulosBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (capitulosBtn.disabled) return;
         if (estadoNavegacion.libroIndex === null) return;
-
         if (!hayDatosCargados()) return;
 
         const estaAbierto = capitulosPanel.classList.contains('open');
         if (!estaAbierto) {
             librosPanel.classList.remove('open');
             librosBtn.classList.remove('active');
-            // Recargar capítulos
             renderizarCapitulos(
                 estadoNavegacion.libroIndex,
                 capitulosPanel,
@@ -149,7 +138,6 @@ export function inicializarNavegacion() {
         capitulosBtn.classList.toggle('active', !estaAbierto);
     });
 
-    // Cerrar paneles al hacer clic fuera
     document.addEventListener('click', (e) => {
         if (librosContainer && !librosContainer.contains(e.target)) {
             librosPanel.classList.remove('open');
@@ -161,13 +149,11 @@ export function inicializarNavegacion() {
         }
     });
 
-    // Exponer funciones para reiniciar
     return {
         cargarLibros,
         seleccionarLibro,
         seleccionarCapitulo,
         cerrarPaneles,
-        // Restaurar selección al cambiar de versión
         restaurarSeleccion: (libroIndex, capituloNum) => {
             if (libroIndex !== null && capituloNum !== null) {
                 const datos = obtenerDatos();

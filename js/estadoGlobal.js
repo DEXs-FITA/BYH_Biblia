@@ -6,7 +6,8 @@ const ESTADO = {
     versionActual: 'RV1960',
     rutaVersion: 'recursos/versiones/RV1960.json',
     versionCorto: 'RVR1960',
-    fondoRuta: null
+    fondoRuta: null,
+    colorFondo: null  // ← NUEVA VARIABLE PARA GUARDAR EL COLOR
 };
 
 const suscriptores = [];
@@ -126,4 +127,39 @@ export function obtenerFondo() {
     return ESTADO.fondoRuta;
 }
 
+// ==========================================
+// FUNCIONES PARA EL COLOR DEL FONDO
+// ==========================================
+
+export function guardarColorFondo(color) {
+    ESTADO.colorFondo = color;
+    try {
+        localStorage.setItem('colorFondo', color || '');
+    } catch (e) {
+        console.warn('Error guardando color:', e);
+    }
+}
+
+export function cargarColorFondo() {
+    try {
+        const guardada = localStorage.getItem('colorFondo');
+        if (guardada) {
+            ESTADO.colorFondo = guardada || null;
+            return ESTADO.colorFondo;
+        }
+    } catch (e) {
+        console.warn('Error cargando color:', e);
+    }
+    return null;
+}
+
+export function obtenerColorFondo() {
+    if (ESTADO.colorFondo === undefined) {
+        cargarColorFondo();
+    }
+    return ESTADO.colorFondo;
+}
+
+// Cargar todo al inicio
 cargarFondo();
+cargarColorFondo();
