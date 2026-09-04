@@ -1,13 +1,12 @@
 // Service Worker para B+H Biblia
 // Estrategia: descarga completa durante la instalacion
 
-const CACHE_VERSION = 'biblia-v5.1.2';
+const CACHE_VERSION = 'biblia-v5.0.0';
 const STATIC_CACHE = 'static-' + CACHE_VERSION;
 const IMAGE_CACHE = 'images-' + CACHE_VERSION;
 const DATA_CACHE = 'data-' + CACHE_VERSION;
 
 const ALL_ASSETS = [
-  // HTML
   'index.html',
   'includes/acercade.html',
   'includes/opciones.html',
