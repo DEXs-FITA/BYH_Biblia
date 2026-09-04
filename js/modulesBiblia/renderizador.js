@@ -8,52 +8,139 @@
 import { obtenerDatos } from './cargador.js';
 import { mostrarVersiculo } from './modal.js'; 
 
-// Renderizar la lista de libros en el panel
-export function renderizarLibros(librosPanel, callbackSeleccion) {
+let librosPanel = null;
+let capitulosPanel = null;
+let contenedorVersos = null;
+let callbackSeleccionLibro = null;
+let callbackSeleccionCapitulo = null;
+
+export function initDelegacionLibros(panel, callback) {
+    librosPanel = panel;
+    callbackSeleccionLibro = callback;
+    
+    if (librosPanel) {
+        librosPanel.removeEventListener('click', handleLibroClick);
+        librosPanel.addEventListener('click', handleLibroClick);
+    }
+}
+
+function handleLibroClick(e) {
+    const opcion = e.target.closest('.libro-opcion');
+    if (!opcion) return;
+    
+    const index = parseInt(opcion.dataset.index);
+    const nombre = opcion.textContent;
+    
+    if (callbackSeleccionLibro) {
+        callbackSeleccionLibro(index, nombre);
+    }
+}
+
+export function initDelegacionCapitulos(panel, callback) {
+    capitulosPanel = panel;
+    callbackSeleccionCapitulo = callback;
+    
+    if (capitulosPanel) {
+        capitulosPanel.removeEventListener('click', handleCapituloClick);
+        capitulosPanel.addEventListener('click', handleCapituloClick);
+    }
+}
+
+function handleCapituloClick(e) {
+    const opcion = e.target.closest('.capitulo-opcion');
+    if (!opcion) return;
+    
+    const capituloNum = parseInt(opcion.dataset.capitulo);
+    
+    if (callbackSeleccionCapitulo) {
+        callbackSeleccionCapitulo(capituloNum);
+    }
+}
+
+export function initDelegacionVersiculos(contenedor) {
+    contenedorVersos = contenedor;
+    
+    if (contenedorVersos) {
+        contenedorVersos.removeEventListener('click', handleVersiculoClick);
+        contenedorVersos.addEventListener('click', handleVersiculoClick);
+    }
+}
+
+function handleVersiculoClick(e) {
+    const tarjeta = e.target.closest('.versiculo');
+    if (!tarjeta) return;
+    
+    const index = parseInt(tarjeta.dataset.index);
+    const libroNombre = tarjeta.dataset.libro;
+    const capituloNum = parseInt(tarjeta.dataset.capitulo);
+    
+    const datos = obtenerDatos();
+    if (!datos) return;
+    
+    const libro = datos.find(l => l._n === libroNombre);
+    if (!libro) return;
+    
+    const capitulo = libro.c.find(c => c._n == capituloNum);
+    if (!capitulo || !capitulo.v) return;
+    
+    const versiculo = capitulo.v[index];
+    if (!versiculo) return;
+    
+    mostrarVersiculo({
+        texto: versiculo.__text,
+        numVersiculo: versiculo._n,
+        libro: libroNombre,
+        capitulo: capituloNum,
+        versiculos: capitulo.v,
+        indice: index
+    });
+}
+
+export function renderizarLibros(panel, callbackSeleccion) {
     const datos = obtenerDatos();
     if (!datos) {
-        librosPanel.innerHTML = '<p class="error">No hay datos cargados</p>';
+        panel.innerHTML = '<p class="error">No hay datos cargados</p>';
         return;
     }
 
-    librosPanel.innerHTML = '';
+    if (!librosPanel || librosPanel !== panel) {
+        initDelegacionLibros(panel, callbackSeleccion);
+    }
+
+    panel.innerHTML = '';
     datos.forEach((libro, index) => {
         const opcion = document.createElement('button');
         opcion.type = 'button';
         opcion.className = 'libro-opcion';
         opcion.textContent = libro._n;
         opcion.dataset.index = index;
-        opcion.addEventListener('click', () => {
-            callbackSeleccion(index, libro._n);
-        });
-        librosPanel.appendChild(opcion);
+        panel.appendChild(opcion);
     });
 }
 
-// Renderizar la lista de capítulos en el panel
-export function renderizarCapitulos(libroIndex, capitulosPanel, callbackSeleccion) {
+export function renderizarCapitulos(libroIndex, panel, callbackSeleccion) {
     const datos = obtenerDatos();
     if (!datos) return;
 
     const libro = datos[libroIndex];
     if (!libro || !libro.c) return;
 
-    capitulosPanel.innerHTML = '';
+    if (!capitulosPanel || capitulosPanel !== panel) {
+        initDelegacionCapitulos(panel, callbackSeleccion);
+    }
+
+    panel.innerHTML = '';
     libro.c.forEach(cap => {
         const opcion = document.createElement('button');
         opcion.type = 'button';
         opcion.className = 'capitulo-opcion';
         opcion.textContent = `${cap._n}`;
         opcion.dataset.capitulo = cap._n;
-        opcion.addEventListener('click', () => {
-            callbackSeleccion(cap._n);
-        });
-        capitulosPanel.appendChild(opcion);
+        panel.appendChild(opcion);
     });
 }
 
-// Renderizar los versículos de un capítulo
-export function renderizarVersiculos(libroIndex, capituloNum, contenedorVersos) {
+export function renderizarVersiculos(libroIndex, capituloNum, contenedor) {
     const datos = obtenerDatos();
     if (!datos) return;
 
@@ -62,6 +149,10 @@ export function renderizarVersiculos(libroIndex, capituloNum, contenedorVersos) 
 
     const capitulo = libro.c.find(cap => cap._n == capituloNum);
     if (!capitulo || !capitulo.v) return;
+
+    if (!contenedorVersos || contenedorVersos !== contenedor) {
+        initDelegacionVersiculos(contenedor);
+    }
 
     const fragment = document.createDocumentFragment();
 
@@ -74,36 +165,31 @@ export function renderizarVersiculos(libroIndex, capituloNum, contenedorVersos) 
         const tarjeta = document.createElement('div');
         tarjeta.className = 'versiculo';
         tarjeta.setAttribute('tabindex', '0');
-        tarjeta.innerHTML = `
-            <span class="num-versiculo">${versiculo._n}</span>
-            <span class="texto-versiculo">${versiculo.__text}</span>
-        `;
         tarjeta.dataset.index = index;
+        tarjeta.dataset.libro = libro._n;
+        tarjeta.dataset.capitulo = capituloNum;
         
-        tarjeta.addEventListener('click', () => {
-            mostrarVersiculo({
-                texto: versiculo.__text,
-                numVersiculo: versiculo._n,
-                libro: libro._n,
-                capitulo: capituloNum,
-                versiculos: capitulo.v,
-                indice: index
-            });
-        });
+        const numSpan = document.createElement('span');
+        numSpan.className = 'num-versiculo';
+        numSpan.textContent = versiculo._n + ' ';
         
+        const textSpan = document.createElement('span');
+        textSpan.className = 'texto-versiculo';
+        textSpan.textContent = versiculo.__text;
+        
+        tarjeta.appendChild(numSpan);
+        tarjeta.appendChild(textSpan);
         fragment.appendChild(tarjeta);
     });
 
-    contenedorVersos.innerHTML = '';
-    contenedorVersos.appendChild(fragment);
+    contenedor.innerHTML = '';
+    contenedor.appendChild(fragment);
 }
 
-// Limpiar el contenido de versículos
 export function limpiarVersiculos(contenedorVersos) {
     contenedorVersos.innerHTML = '';
 }
 
-// Marcar un botón como seleccionado
 export function marcarSeleccionado(selector, valor, clase = 'seleccionado') {
     document.querySelectorAll(selector).forEach(btn => {
         btn.classList.remove(clase);

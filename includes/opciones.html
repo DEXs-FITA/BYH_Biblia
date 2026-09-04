@@ -1,6 +1,6 @@
 <div class="seccion-opciones">
 
-<!-- OPCIONES DE VERSIONES BIBLIA -->
+    <!-- OPCIONES DE VERSIONES BIBLIA -->
     <div class="versiones-biblia">
         <h3>Selecciona una versión para cambiar</h3>
 
@@ -10,16 +10,34 @@
         </select>
         <button id="btn-cambiar-version" class="btn-cambiar-version">Cambiar versión</button>
     </div>
-<!-- CAMBIAR FONDO DE PRESENTACIÓN -->
+    <!-- CAMBIAR FONDO DE PRESENTACIÓN -->
     <div class="background-modal">
         <h3>Cambiar fondo de presentación</h3>
         <div class="fondo-thumbnails" id="fondoThumbnails">
             <!-- ========================================== -->
             <!-- OPCIÓN 0: COLOR POR DEFECTO               -->
             <!-- ========================================== -->
-            <div class="fondo-item" data-id="default" data-tipo="color">
+            <div class="fondo-item" data-id="default" data-tipo="color" data-color="var(--principal-primario)">
                 <div class="color-muestra" style="background-color: var(--principal-primario);"></div>
                 <div class="nombre-fondo">Color por defecto</div>
+                <div class="check-indicator">✓</div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- COLOR 1               -->
+            <!-- ========================================== -->
+            <div class="fondo-item" data-id="color1" data-tipo="color" data-color="rgb(0, 172, 197)">
+                <div class="color-muestra" style="background-color: rgb(0, 172, 197);"></div>
+                <div class="nombre-fondo">Azul</div>
+                <div class="check-indicator">✓</div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- COLOR 2               -->
+            <!-- ========================================== -->
+            <div class="fondo-item" data-id="color2" data-tipo="color" data-color="rgb(255, 217, 126)">
+                <div class="color-muestra" style="background-color: rgb(255, 217, 126);"></div>
+                <div class="nombre-fondo">Amarillo</div>
                 <div class="check-indicator">✓</div>
             </div>
 
@@ -27,7 +45,8 @@
             <!-- IMAGEN 1-->
             <!-- ========================================== -->
             <div class="fondo-item" data-id="fondo1">
-                <img src="recursos/imagenes/fondos/imagen1.webp" alt="Lavanda">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen1.webp" alt="Lavanda"
+                    data-ruta="recursos/imagenes/fondos/imagen1.webp">
                 <div class="nombre-fondo">Lavanda</div>
                 <div class="check-indicator">✓</div>
             </div>
@@ -36,7 +55,8 @@
             <!-- IMAGEN 2-->
             <!-- ========================================== -->
             <div class="fondo-item" data-id="fondo2">
-                <img src="recursos/imagenes/fondos/imagen2.webp" alt="Biblia-1">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen2.webp" alt="Biblia-1"
+                    data-ruta="recursos/imagenes/fondos/imagen2.webp">
                 <div class="nombre-fondo">Biblia-1</div>
                 <div class="check-indicator">✓</div>
             </div>
@@ -45,7 +65,8 @@
             <!-- IMAGEN 3-->
             <!-- ========================================== -->
             <div class="fondo-item" data-id="fondo3">
-                <img src="recursos/imagenes/fondos/imagen3.webp" alt="Biblia-2">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen3.webp" alt="Biblia-2"
+                    data-ruta="recursos/imagenes/fondos/imagen3.webp">
                 <div class="nombre-fondo">Biblia-2</div>
                 <div class="check-indicator">✓</div>
             </div>
@@ -54,7 +75,8 @@
             <!-- IMAGEN 4-->
             <!-- ========================================== -->
             <div class="fondo-item" data-id="fondo4">
-                <img src="recursos/imagenes/fondos/imagen4.webp" alt="Arena">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen4.webp" alt="Arena"
+                    data-ruta="recursos/imagenes/fondos/imagen4.webp">
                 <div class="nombre-fondo">Arena</div>
                 <div class="check-indicator">✓</div>
             </div>
@@ -63,8 +85,19 @@
             <!-- IMAGEN 5-->
             <!-- ========================================== -->
             <div class="fondo-item" data-id="fondo5">
-                <img src="recursos/imagenes/fondos/imagen5.webp" alt="Carretera">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen5.webp" alt="Carretera"
+                    data-ruta="recursos/imagenes/fondos/imagen5.webp">
                 <div class="nombre-fondo">Carretera</div>
+                <div class="check-indicator">✓</div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- IMAGEN 6-->
+            <!-- ========================================== -->
+            <div class="fondo-item" data-id="fondo6">
+                <img class="lazy" data-src="recursos/imagenes/fondos/imagen6.webp" alt="Desierto"
+                    data-ruta="recursos/imagenes/fondos/imagen6.webp">
+                <div class="nombre-fondo">Desierto</div>
                 <div class="check-indicator">✓</div>
             </div>
         </div>
