@@ -8,7 +8,7 @@ const DATA_CACHE = 'data-' + CACHE_VERSION;
 
 const ALL_ASSETS = [
   // HTML
-    'index.html',
+  'index.html',
   'includes/acercade.html',
   'includes/opciones.html',
   
