@@ -178,7 +178,6 @@ function aplicarFondoSinParpadeo() {
     const ruta = obtenerFondo();
     const color = obtenerColorFondo();
     
-    // Verificar si hay un color guardado
     if (color && !ruta) {
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = color;
@@ -190,7 +189,6 @@ function aplicarFondoSinParpadeo() {
         return;
     }
     
-    // Si hay imagen
     if (ruta) {
         if (fondoCacheado) {
             contenedor.style.backgroundImage = 'url(' + fondoCacheado + ')';
@@ -218,7 +216,6 @@ function aplicarFondoSinParpadeo() {
             }
         });
     } else {
-        // Color por defecto
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         if (fondoActualUrl) {
