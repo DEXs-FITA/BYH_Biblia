@@ -3,7 +3,7 @@
 //=========================================
 
 import { abrirModal } from '../modulesBiblia/modalGeneral.js';
-import { cambiarVersion, guardarFondo, obtenerFondo, cargarVersionGuardada } from '../estadoGlobal.js';
+import { cambiarVersion, guardarFondo, obtenerFondo, cargarVersionGuardada, obtenerColorFondo, guardarColorFondo } from '../estadoGlobal.js';
 import { seleccionarFondo, aplicarFondo } from '../modulesBiblia/modal.js';
 import imageLoader from '../imageLoader.js';
 
@@ -31,7 +31,6 @@ export function inicializarOpciones() {
 }
 
 function configurarOpcionesDelModal() {
-    // Sincronizar select con la versión guardada
     const estado = cargarVersionGuardada();
     const select = document.getElementById('menu-versiones');
     if (select && estado.rutaVersion) {
