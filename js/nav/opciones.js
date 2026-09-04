@@ -3,7 +3,7 @@
 //=========================================
 
 import { abrirModal } from '../modulesBiblia/modalGeneral.js';
-import { cambiarVersion, guardarFondo, obtenerFondo, guardarColorFondo, obtenerColorFondo } from '../estadoGlobal.js';
+import { cambiarVersion, guardarFondo, obtenerFondo, cargarVersionGuardada } from '../estadoGlobal.js';
 import { seleccionarFondo, aplicarFondo } from '../modulesBiblia/modal.js';
 import imageLoader from '../imageLoader.js';
 
@@ -20,14 +20,25 @@ export function inicializarOpciones() {
         if (e.target.id === 'btn-cambiar-version') {
             const select = document.getElementById('menu-versiones');
             if (select) {
+                console.log('Cambiando a versión:', select.value);
                 cambiarVersion(select.value);
                 mostrarNotificacion('Version cargada correctamente');
+            } else {
+                console.error('Select no encontrado');
             }
         }
     });
 }
 
 function configurarOpcionesDelModal() {
+    // Sincronizar select con la versión guardada
+    const estado = cargarVersionGuardada();
+    const select = document.getElementById('menu-versiones');
+    if (select && estado.rutaVersion) {
+        select.value = estado.rutaVersion;
+        console.log('Select sincronizado con:', select.value);
+    }
+    
     configurarMiniaturas();
     configurarBotonFondo();
     cargarImagenesOpciones();
@@ -64,7 +75,6 @@ function configurarMiniaturas() {
         const tipo = item.dataset.tipo || 'imagen';
         if (tipo === 'color') {
             const colorId = item.dataset.id || 'default';
-            // Verificar si es el color por defecto
             if (colorId === 'default' && !colorGuardado) {
                 item.classList.add('seleccionado');
             } else if (colorGuardado && item.dataset.color === colorGuardado) {
@@ -104,21 +114,19 @@ function manejarClickMiniatura(event) {
         const color = item.dataset.color || 'var(--principal-primario)';
         
         if (colorId === 'default') {
-            // Seleccionar color por defecto
             guardarFondo(null);
             guardarColorFondo(null);
             aplicarFondo();
         } else {
-            // Seleccionar color personalizado
-            guardarFondo(null);  // Limpiar imagen
-            guardarColorFondo(color);  // Guardar el color real
+            guardarFondo(null);
+            guardarColorFondo(color);
             aplicarColorFondo(color);
         }
     } else {
         const img = item.querySelector('img');
         if (img) {
             const ruta = img.dataset.ruta || img.src;
-            guardarColorFondo(null);  // Limpiar color
+            guardarColorFondo(null);
             seleccionarFondo('imagen', ruta);
         }
     }
@@ -130,7 +138,6 @@ function aplicarColorFondo(color) {
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = color;
     }
-    // Guardar el color en estado global
     guardarColorFondo(color);
 }
 
