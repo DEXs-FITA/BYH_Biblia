@@ -6,6 +6,10 @@
 // - Conectar con estadoGlobal para cambios de versión
 // - Punto de entrada principal para la funcionalidad de lectura
 
+//=========================================
+// === ORQUESTADOR DE LECTURA BIBLICA ===
+//=========================================
+
 import { cargarVersion, obtenerDatos } from './cargador.js';
 import { renderizarVersiculos, limpiarVersiculos, initDelegacionVersiculos } from './renderizador.js';
 import { inicializarNavegacion, obtenerSeleccion } from './navegador.js';
@@ -21,7 +25,17 @@ export function inicializarBiblia() {
         initDelegacionVersiculos(contenedorVersos);
     }
 
+    // Cargar versión guardada
     const estado = cargarVersionGuardada();
+    console.log('Versión guardada al iniciar:', estado.rutaVersion);
+    
+    // Forzar actualización del select
+    const select = document.getElementById('menu-versiones');
+    if (select && estado.rutaVersion) {
+        select.value = estado.rutaVersion;
+        console.log('Select actualizado a:', select.value);
+    }
+    
     cargarVersionYRenderizar(estado.rutaVersion);
 
     suscribirCambioVersion((nuevoEstado) => {
