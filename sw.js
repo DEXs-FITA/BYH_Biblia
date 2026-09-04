@@ -1,10 +1,10 @@
 // Service Worker para B+H Biblia
-// Estrategia: descarga completa durante la instalación
+// Estrategia: descarga completa durante la instalacion
 
 const CACHE_VERSION = 'biblia-v5.0.0';
-const STATIC_CACHE = `static-${CACHE_VERSION}`;
-const IMAGE_CACHE = `images-${CACHE_VERSION}`;
-const DATA_CACHE = `data-${CACHE_VERSION}`;
+const STATIC_CACHE = 'static-' + CACHE_VERSION;
+const IMAGE_CACHE = 'images-' + CACHE_VERSION;
+const DATA_CACHE = 'data-' + CACHE_VERSION;
 
 // ==========================================
 // TODOS LOS ARCHIVOS (descarga completa)
@@ -33,7 +33,7 @@ const ALL_ASSETS = [
   '/js/imageLoader.js',
   '/js/progressBar.js',
   
-  // JS - Módulos Biblia
+  // JS - Modulos Biblia
   '/js/modulesBiblia/atajos.js',
   '/js/modulesBiblia/cargador.js',
   '/js/modulesBiblia/lectorListas.js',
@@ -47,7 +47,7 @@ const ALL_ASSETS = [
   '/js/nav/botones.js',
   '/js/nav/opciones.js',
   
-  // JSON (versiones bíblicas)
+  // JSON (versiones biblicas)
   '/recursos/versiones/NVI.json',
   '/recursos/versiones/RV1960.json',
   
@@ -55,7 +55,7 @@ const ALL_ASSETS = [
   '/recursos/fuentes/Montserrat-ExtraBold.ttf',
   '/recursos/fuentes/Montserrat-Regular.ttf',
   
-  // Imágenes (todas)
+  // Imagenes (todas)
   '/recursos/imagenes/mh_512.png',
   '/recursos/imagenes/mh_512.svg',
   '/recursos/imagenes/colaboradores/logo_dexs_fita.png',
@@ -68,27 +68,28 @@ const ALL_ASSETS = [
 ];
 
 // ==========================================
-// INSTALACIÓN - DESCARGAR TODO
+// INSTALACION - DESCARGAR TODO
 // ==========================================
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', function(event) {
   event.waitUntil(
-    (async () => {
-      const cache = await caches.open(STATIC_CACHE);
-      const imageCache = await caches.open(IMAGE_CACHE);
-      const dataCache = await caches.open(DATA_CACHE);
+    (async function() {
+      var cache = await caches.open(STATIC_CACHE);
+      var imageCache = await caches.open(IMAGE_CACHE);
+      var dataCache = await caches.open(DATA_CACHE);
       
-      console.log('📦 Descargando todos los archivos...');
+      console.log('Descargando todos los archivos...');
       
-      // Descargar todos los archivos con barra de progreso
-      const total = ALL_ASSETS.length;
-      let completados = 0;
+      var total = ALL_ASSETS.length;
+      var completados = 0;
       
-      for (const url of ALL_ASSETS) {
+      for (var i = 0; i < ALL_ASSETS.length; i++) {
+        var url = ALL_ASSETS[i];
         try {
-          const response = await fetch(url);
+          var response = await fetch(url);
           if (response && response.ok) {
-            // Determinar qué cache usar según el tipo de archivo
+            var responseClone = response.clone();
+            
             if (url.match(/\.(webp|png|jpg|jpeg|gif|svg|ico)$/i)) {
               await imageCache.put(url, response);
             } else if (url.endsWith('.json')) {
@@ -96,13 +97,13 @@ self.addEventListener('install', (event) => {
             } else {
               await cache.put(url, response);
             }
-            completados++;
-            console.log(`✅ ${completados}/${total}: ${url}`);
             
-            // Notificar progreso (para la barra)
-            const percent = Math.round((completados / total) * 100);
-            self.clients.matchAll().then(clients => {
-              clients.forEach(client => {
+            completados++;
+            console.log(completados + '/' + total + ': ' + url);
+            
+            var percent = Math.round((completados / total) * 100);
+            self.clients.matchAll().then(function(clients) {
+              clients.forEach(function(client) {
                 client.postMessage({
                   type: 'PROGRESS',
                   progress: percent,
@@ -113,36 +114,38 @@ self.addEventListener('install', (event) => {
             });
           }
         } catch (error) {
-          console.warn(`⚠️ Falló: ${url}`, error);
+          console.warn('Fallo: ' + url, error);
         }
       }
       
-      console.log(`🎉 Descarga completa: ${completados}/${total} archivos`);
+      console.log('Descarga completa: ' + completados + '/' + total + ' archivos');
       await self.skipWaiting();
     })()
   );
 });
 
 // ==========================================
-// ACTIVACIÓN
+// ACTIVACION
 // ==========================================
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys()
-      .then((cacheNames) => {
+      .then(function(cacheNames) {
         return Promise.all(
           cacheNames
-            .filter((name) => {
-              return !name.includes('biblia-v');
+            .filter(function(name) {
+              return name.indexOf('biblia-v') === -1;
             })
-            .map((name) => {
-              console.log(`🗑️ Eliminando cache antiguo: ${name}`);
+            .map(function(name) {
+              console.log('Eliminando cache antiguo: ' + name);
               return caches.delete(name);
             })
         );
       })
-      .then(() => self.clients.claim())
+      .then(function() {
+        return self.clients.claim();
+      })
   );
 });
 
@@ -150,38 +153,41 @@ self.addEventListener('activate', (event) => {
 // INTERCEPTAR PETICIONES
 // ==========================================
 
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-  
-  // Estrategia: Cache First para todo
+self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
+      .then(function(response) {
         if (response) {
-          // Actualizar en segundo plano (stale-while-revalidate)
+          var responseClone = response.clone();
+          
           fetch(event.request)
-            .then((freshResponse) => {
+            .then(function(freshResponse) {
               if (freshResponse && freshResponse.ok) {
-                const cache = caches.open('static-biblia-v5.0.0');
-                cache.then((c) => c.put(event.request, freshResponse.clone()));
+                var cache = caches.open(STATIC_CACHE);
+                cache.then(function(c) {
+                  c.put(event.request, freshResponse);
+                });
               }
             })
-            .catch(() => {});
-          return response;
+            .catch(function() {});
+          
+          return responseClone;
         }
         
-        // Si no está en cache, descargar
         return fetch(event.request)
-          .then((response) => {
+          .then(function(response) {
             if (response && response.ok) {
-              const cache = caches.open('static-biblia-v5.0.0');
-              cache.then((c) => c.put(event.request, response.clone()));
+              var responseClone = response.clone();
+              var cache = caches.open(STATIC_CACHE);
+              cache.then(function(c) {
+                c.put(event.request, responseClone);
+              });
               return response;
             }
             return response;
           });
       })
-      .catch(() => {
+      .catch(function() {
         return new Response('', { status: 404 });
       })
   );
