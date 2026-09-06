@@ -115,7 +115,9 @@ Si borras los datos de tu navegar esto tambien borrara los datos de B&H Biblia p
 ## Versiones de la Biblia incluidas
 
 - **Reina Valera 1960 (RV1960)**
-- **Nueva Versión Internacional (NVI)** 
+- **Nueva Versión Internacional (NVI)**
+- **Traducción en Lenguaje Actual**
+- **Nueva Traducción Viviente**
 
 ## Créditos
 
@@ -124,7 +126,7 @@ Si borras los datos de tu navegar esto tambien borrara los datos de B&H Biblia p
 
 ## Versión
 
-**Versión actual:** 5.1.2
+**Versión actual:** 5.2.0
 
 ## Licencia
 
