@@ -8,10 +8,12 @@ import imageLoader from '../imageLoader.js';
 let modalContainer = null;
 let contextoActual = null;
 let zoomLevel = 3;
-let fondoActualUrl = null;
-let fondoPrecargado = null;
-let fondoCacheado = null;
+let fondoActualUrl = null;      
+let fondoCacheado = null;        
 
+// ---------------------------------------------------------------------
+// Mostrar el modal con un versículo
+// ---------------------------------------------------------------------
 export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versiculos, indice }) {
     if (!modalContainer) {
         const template = document.getElementById('modal-pantalla');
@@ -30,7 +32,7 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
 
         const btnZoomMas = modalContainer.querySelector('#zoom-mas');
-        const btnZoomMenos = modalContainer.querySelector('#zoom-menos');
+        const btnZoomMenos = modalContainer.querySelector('#zoom-menosa');
         const btnAtras = modalContainer.querySelector('#atras');
         const btnSiguiente = modalContainer.querySelector('#siguiente');
 
@@ -42,13 +44,15 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
 
     contextoActual = { libro, capitulo, versiculos, indice };
     actualizarContenidoModal();
-    
     aplicarFondoSinParpadeo();
-    
+
     modalContainer.classList.add('visible');
     document.body.style.overflow = 'hidden';
 }
 
+// ---------------------------------------------------------------------
+// Actualizar el contenido del modal (texto, cita, navegación)
+// ---------------------------------------------------------------------
 function actualizarContenidoModal() {
     if (!contextoActual) return;
 
@@ -59,7 +63,7 @@ function actualizarContenidoModal() {
     const estado = obtenerEstado();
     const versionCorto = estado.versionCorto || 'RVR60';
 
-    const contenedor = modalContainer.querySelector('.versiculo-mostrado');
+    const contenedor = modalContainer.querySelector('.contenido-versiculo');
     contenedor.innerHTML = '';
 
     const textoEl = document.createElement('span');
@@ -100,10 +104,8 @@ function cerrarModal() {
 
 function cambiarZoom(incremento) {
     zoomLevel = Math.max(1, zoomLevel + incremento);
-    
     const textoEl = modalContainer.querySelector('.texto-versiculo-modal');
     const citaContainer = modalContainer.querySelector('.cita-container');
-    
     if (textoEl) textoEl.style.fontSize = zoomLevel + 'rem';
     if (citaContainer) citaContainer.style.fontSize = Math.max(0.5, zoomLevel - 1) + 'rem';
 }
@@ -117,13 +119,24 @@ function navegar(direccion) {
     }
 }
 
-// ==========================================
-// FUNCIONES PARA EL FONDO
-// ==========================================
+// ---------------------------------------------------------------------
+// GESTIÓN DEL FONDO DE PANTALLA
+// ---------------------------------------------------------------------
 
+/**
+ * Seleccionar un fondo (imagen o color) y guardarlo en localStorage.
+ * @param {string} tipo - 'imagen' o 'color'
+ * @param {string} ruta - Ruta de la imagen o código de color
+ */
 export function seleccionarFondo(tipo, ruta) {
-    const rutaGuardar = (tipo === 'imagen') ? ruta : null;
-    guardarFondo(rutaGuardar);
+    if (tipo === 'imagen') {
+        guardarFondo(ruta);
+    } else {
+        // Si es color, guardamos null en fondoRuta y el color se guarda aparte
+        guardarFondo(null);
+        // Nota: el color se guarda mediante guardarColorFondo desde otro lugar
+    }
+    // Limpiar cachés de fondo
     fondoCacheado = null;
     fondoPrecargado = null;
     if (fondoActualUrl) {
@@ -132,29 +145,32 @@ export function seleccionarFondo(tipo, ruta) {
     }
 }
 
+/**
+ * Carga el fondo desde la caché del Service Worker usando caches.match()
+ */
 async function cargarFondoPersistente() {
     const ruta = obtenerFondo();
     if (!ruta) {
         fondoCacheado = null;
         return null;
     }
-    
+
     if (fondoCacheado) {
         return fondoCacheado;
     }
-    
+
     try {
-        const cache = await caches.open('images-biblia-v5.0.0');
-        const cachedResponse = await cache.match(ruta);
-        
+        // Convertir ruta relativa a absoluta para que caches.match la encuentre
+        const urlAbsoluta = new URL(ruta, location.href).href;
+        const cachedResponse = await caches.match(urlAbsoluta);
+
         if (cachedResponse) {
             const blob = await cachedResponse.blob();
             const objectUrl = URL.createObjectURL(blob);
             fondoCacheado = objectUrl;
             return objectUrl;
         }
-        
-        // Si no está en caché, no hacer fetch (el SW ya debería tenerla)
+
         console.warn('Fondo no encontrado en caché:', ruta);
         return null;
     } catch (error) {
@@ -164,14 +180,18 @@ async function cargarFondoPersistente() {
     }
 }
 
+/**
+ * Usa el fondo cacheado si existe, o lo carga asíncronamente.
+ */
 function aplicarFondoSinParpadeo() {
     let contenedor = modalContainer ? modalContainer.querySelector('.contenedor-modal') : null;
     if (!contenedor) contenedor = document.querySelector('.contenedor-modal');
     if (!contenedor) return;
-    
+
     const ruta = obtenerFondo();
     const color = obtenerColorFondo();
-    
+
+    // Si hay un color guardado y no hay imagen, usamos el color
     if (color && !ruta) {
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = color;
@@ -182,8 +202,10 @@ function aplicarFondoSinParpadeo() {
         fondoCacheado = null;
         return;
     }
-    
+
+    // Si hay una imagen de fondo
     if (ruta) {
+        // Si ya la tenemos cacheada, la aplicamos directamente
         if (fondoCacheado) {
             contenedor.style.backgroundImage = 'url(' + fondoCacheado + ')';
             contenedor.style.backgroundSize = 'cover';
@@ -194,10 +216,12 @@ function aplicarFondoSinParpadeo() {
             fondoActualUrl = fondoCacheado;
             return;
         }
-        
+
+        // Temporalmente ponemos un color de fondo mientras se carga la imagen
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         contenedor.style.backgroundImage = 'none';
-        
+
+        // Cargar la imagen de forma asíncrona
         cargarFondoPersistente().then((objectUrl) => {
             if (objectUrl) {
                 contenedor.style.backgroundImage = 'url(' + objectUrl + ')';
@@ -210,6 +234,7 @@ function aplicarFondoSinParpadeo() {
             }
         });
     } else {
+        // Sin imagen ni color: fondo por defecto
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         if (fondoActualUrl) {
@@ -220,12 +245,25 @@ function aplicarFondoSinParpadeo() {
     }
 }
 
+// ---------------------------------------------------------------------
+// EXPORTACIONES PÚBLICAS
+// ---------------------------------------------------------------------
+
+/**
+ * Aplica el fondo (punto de entrada para otros módulos).
+ * Simplemente llama a la función interna.
+ */
 export function aplicarFondo() {
     aplicarFondoSinParpadeo();
 }
 
+/**
+ * Devuelve la ruta del fondo actualmente seleccionado.
+ * @returns {string|null}
+ */
 export function obtenerFondoSeleccionado() {
     return obtenerFondo();
 }
 
+// Cargar el fondo guardado al inicio (para que esté disponible)
 cargarFondo();
