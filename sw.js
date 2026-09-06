@@ -1,7 +1,7 @@
 // Service Worker para B+H Biblia
 // Estrategia: descarga completa durante la instalacion
 
-const CACHE_VERSION = 'biblia-v5.0.0';
+const CACHE_VERSION = 'biblia-v5.2.0';
 const STATIC_CACHE = 'static-' + CACHE_VERSION;
 const IMAGE_CACHE = 'images-' + CACHE_VERSION;
 const DATA_CACHE = 'data-' + CACHE_VERSION;
@@ -42,6 +42,8 @@ const ALL_ASSETS = [
   'manifest.json',
   'recursos/versiones/NVI.json',
   'recursos/versiones/RV1960.json',
+  'recursos/versiones/TLA.json',
+  'recursos/versiones/NTV.json',
   
   'recursos/fuentes/Montserrat-ExtraBold.ttf',
   'recursos/fuentes/Montserrat-Regular.ttf',
