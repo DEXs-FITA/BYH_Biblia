@@ -3,16 +3,15 @@
 //=========================================
 
 import { obtenerEstado, guardarFondo, cargarFondo, obtenerFondo, obtenerColorFondo } from '../estadoGlobal.js';
-import imageLoader from '../imageLoader.js';
 
 let modalContainer = null;
 let contextoActual = null;
 let zoomLevel = 3;
-let fondoActualUrl = null;      
-let fondoCacheado = null;        
+let fondoActualUrl = null;
+let fondoCacheado = null;
 
 // ---------------------------------------------------------------------
-// Mostrar el modal con un versículo
+// Mostrar el modal
 // ---------------------------------------------------------------------
 export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versiculos, indice }) {
     if (!modalContainer) {
@@ -51,7 +50,7 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
 }
 
 // ---------------------------------------------------------------------
-// Actualizar el contenido del modal (texto, cita, navegación)
+// Actualizar contenido
 // ---------------------------------------------------------------------
 function actualizarContenidoModal() {
     if (!contextoActual) return;
@@ -63,7 +62,13 @@ function actualizarContenidoModal() {
     const estado = obtenerEstado();
     const versionCorto = estado.versionCorto || 'RVR60';
 
-    const contenedor = modalContainer.querySelector('.contenido-versiculo');
+    // Usa la clase que ya tenías: .versiculo-mostrado
+    const contenedor = modalContainer.querySelector('.versiculo-mostrado');
+    if (!contenedor) {
+        console.error('No se encontró .versiculo-mostrado');
+        return;
+    }
+
     contenedor.innerHTML = '';
 
     const textoEl = document.createElement('span');
@@ -120,57 +125,39 @@ function navegar(direccion) {
 }
 
 // ---------------------------------------------------------------------
-// GESTIÓN DEL FONDO DE PANTALLA
+// GESTIÓN DEL FONDO
 // ---------------------------------------------------------------------
-
-/**
- * Seleccionar un fondo (imagen o color) y guardarlo en localStorage.
- * @param {string} tipo - 'imagen' o 'color'
- * @param {string} ruta - Ruta de la imagen o código de color
- */
 export function seleccionarFondo(tipo, ruta) {
     if (tipo === 'imagen') {
         guardarFondo(ruta);
     } else {
-        // Si es color, guardamos null en fondoRuta y el color se guarda aparte
         guardarFondo(null);
-        // Nota: el color se guarda mediante guardarColorFondo desde otro lugar
     }
-    // Limpiar cachés de fondo
     fondoCacheado = null;
-    fondoPrecargado = null;
     if (fondoActualUrl) {
         URL.revokeObjectURL(fondoActualUrl);
         fondoActualUrl = null;
     }
 }
 
-/**
- * Carga el fondo desde la caché del Service Worker usando caches.match()
- */
 async function cargarFondoPersistente() {
     const ruta = obtenerFondo();
     if (!ruta) {
         fondoCacheado = null;
         return null;
     }
-
     if (fondoCacheado) {
         return fondoCacheado;
     }
-
     try {
-        // Convertir ruta relativa a absoluta para que caches.match la encuentre
         const urlAbsoluta = new URL(ruta, location.href).href;
         const cachedResponse = await caches.match(urlAbsoluta);
-
         if (cachedResponse) {
             const blob = await cachedResponse.blob();
             const objectUrl = URL.createObjectURL(blob);
             fondoCacheado = objectUrl;
             return objectUrl;
         }
-
         console.warn('Fondo no encontrado en caché:', ruta);
         return null;
     } catch (error) {
@@ -180,9 +167,6 @@ async function cargarFondoPersistente() {
     }
 }
 
-/**
- * Usa el fondo cacheado si existe, o lo carga asíncronamente.
- */
 function aplicarFondoSinParpadeo() {
     let contenedor = modalContainer ? modalContainer.querySelector('.contenedor-modal') : null;
     if (!contenedor) contenedor = document.querySelector('.contenedor-modal');
@@ -191,7 +175,6 @@ function aplicarFondoSinParpadeo() {
     const ruta = obtenerFondo();
     const color = obtenerColorFondo();
 
-    // Si hay un color guardado y no hay imagen, usamos el color
     if (color && !ruta) {
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = color;
@@ -203,9 +186,7 @@ function aplicarFondoSinParpadeo() {
         return;
     }
 
-    // Si hay una imagen de fondo
     if (ruta) {
-        // Si ya la tenemos cacheada, la aplicamos directamente
         if (fondoCacheado) {
             contenedor.style.backgroundImage = 'url(' + fondoCacheado + ')';
             contenedor.style.backgroundSize = 'cover';
@@ -217,11 +198,9 @@ function aplicarFondoSinParpadeo() {
             return;
         }
 
-        // Temporalmente ponemos un color de fondo mientras se carga la imagen
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         contenedor.style.backgroundImage = 'none';
 
-        // Cargar la imagen de forma asíncrona
         cargarFondoPersistente().then((objectUrl) => {
             if (objectUrl) {
                 contenedor.style.backgroundImage = 'url(' + objectUrl + ')';
@@ -234,7 +213,6 @@ function aplicarFondoSinParpadeo() {
             }
         });
     } else {
-        // Sin imagen ni color: fondo por defecto
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         if (fondoActualUrl) {
@@ -245,25 +223,12 @@ function aplicarFondoSinParpadeo() {
     }
 }
 
-// ---------------------------------------------------------------------
-// EXPORTACIONES PÚBLICAS
-// ---------------------------------------------------------------------
-
-/**
- * Aplica el fondo (punto de entrada para otros módulos).
- * Simplemente llama a la función interna.
- */
 export function aplicarFondo() {
     aplicarFondoSinParpadeo();
 }
 
-/**
- * Devuelve la ruta del fondo actualmente seleccionado.
- * @returns {string|null}
- */
 export function obtenerFondoSeleccionado() {
     return obtenerFondo();
 }
 
-// Cargar el fondo guardado al inicio (para que esté disponible)
 cargarFondo();
