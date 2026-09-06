@@ -3,16 +3,15 @@
 //=========================================
 
 import { obtenerEstado, guardarFondo, cargarFondo, obtenerFondo, obtenerColorFondo } from '../estadoGlobal.js';
+import imageLoader from '../imageLoader.js';
 
 let modalContainer = null;
 let contextoActual = null;
 let zoomLevel = 3;
 let fondoActualUrl = null;
+let fondoPrecargado = null;
 let fondoCacheado = null;
 
-// ---------------------------------------------------------------------
-// Mostrar el modal
-// ---------------------------------------------------------------------
 export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versiculos, indice }) {
     if (!modalContainer) {
         const template = document.getElementById('modal-pantalla');
@@ -43,15 +42,13 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
 
     contextoActual = { libro, capitulo, versiculos, indice };
     actualizarContenidoModal();
+    
     aplicarFondoSinParpadeo();
-
+    
     modalContainer.classList.add('visible');
     document.body.style.overflow = 'hidden';
 }
 
-// ---------------------------------------------------------------------
-// Actualizar contenido
-// ---------------------------------------------------------------------
 function actualizarContenidoModal() {
     if (!contextoActual) return;
 
@@ -62,13 +59,8 @@ function actualizarContenidoModal() {
     const estado = obtenerEstado();
     const versionCorto = estado.versionCorto || 'RVR60';
 
-    // Usa la clase que ya tenías: .versiculo-mostrado
-    const contenedor = modalContainer.querySelector('.versiculo-mostrado');
-    if (!contenedor) {
-        console.error('No se encontró .versiculo-mostrado');
-        return;
-    }
-
+    // CAMBIO AQUÍ: seleccionar .contenido-versiculo en lugar de .versiculo-mostrado
+    const contenedor = modalContainer.querySelector('.contenido-versiculo');
     contenedor.innerHTML = '';
 
     const textoEl = document.createElement('span');
@@ -109,8 +101,10 @@ function cerrarModal() {
 
 function cambiarZoom(incremento) {
     zoomLevel = Math.max(1, zoomLevel + incremento);
+    
     const textoEl = modalContainer.querySelector('.texto-versiculo-modal');
     const citaContainer = modalContainer.querySelector('.cita-container');
+    
     if (textoEl) textoEl.style.fontSize = zoomLevel + 'rem';
     if (citaContainer) citaContainer.style.fontSize = Math.max(0.5, zoomLevel - 1) + 'rem';
 }
@@ -124,16 +118,15 @@ function navegar(direccion) {
     }
 }
 
-// ---------------------------------------------------------------------
-// GESTIÓN DEL FONDO
-// ---------------------------------------------------------------------
+// ==========================================
+// FUNCIONES PARA EL FONDO
+// ==========================================
+
 export function seleccionarFondo(tipo, ruta) {
-    if (tipo === 'imagen') {
-        guardarFondo(ruta);
-    } else {
-        guardarFondo(null);
-    }
+    const rutaGuardar = (tipo === 'imagen') ? ruta : null;
+    guardarFondo(rutaGuardar);
     fondoCacheado = null;
+    fondoPrecargado = null;
     if (fondoActualUrl) {
         URL.revokeObjectURL(fondoActualUrl);
         fondoActualUrl = null;
@@ -146,18 +139,22 @@ async function cargarFondoPersistente() {
         fondoCacheado = null;
         return null;
     }
+    
     if (fondoCacheado) {
         return fondoCacheado;
     }
+    
     try {
         const urlAbsoluta = new URL(ruta, location.href).href;
         const cachedResponse = await caches.match(urlAbsoluta);
+        
         if (cachedResponse) {
             const blob = await cachedResponse.blob();
             const objectUrl = URL.createObjectURL(blob);
             fondoCacheado = objectUrl;
             return objectUrl;
         }
+        
         console.warn('Fondo no encontrado en caché:', ruta);
         return null;
     } catch (error) {
@@ -171,10 +168,10 @@ function aplicarFondoSinParpadeo() {
     let contenedor = modalContainer ? modalContainer.querySelector('.contenedor-modal') : null;
     if (!contenedor) contenedor = document.querySelector('.contenedor-modal');
     if (!contenedor) return;
-
+    
     const ruta = obtenerFondo();
     const color = obtenerColorFondo();
-
+    
     if (color && !ruta) {
         contenedor.style.backgroundImage = 'none';
         contenedor.style.backgroundColor = color;
@@ -185,7 +182,7 @@ function aplicarFondoSinParpadeo() {
         fondoCacheado = null;
         return;
     }
-
+    
     if (ruta) {
         if (fondoCacheado) {
             contenedor.style.backgroundImage = 'url(' + fondoCacheado + ')';
@@ -197,10 +194,10 @@ function aplicarFondoSinParpadeo() {
             fondoActualUrl = fondoCacheado;
             return;
         }
-
+        
         contenedor.style.backgroundColor = 'var(--principal-primario)';
         contenedor.style.backgroundImage = 'none';
-
+        
         cargarFondoPersistente().then((objectUrl) => {
             if (objectUrl) {
                 contenedor.style.backgroundImage = 'url(' + objectUrl + ')';
