@@ -30,7 +30,7 @@ export function mostrarVersiculo({ texto, numVersiculo, libro, capitulo, versicu
         if (btnCerrar) btnCerrar.addEventListener('click', cerrarModal);
 
         const btnZoomMas = modalContainer.querySelector('#zoom-mas');
-        const btnZoomMenos = modalContainer.querySelector('#zoom-menosa');
+        const btnZoomMenos = modalContainer.querySelector('#zoom-menos');
         const btnAtras = modalContainer.querySelector('#atras');
         const btnSiguiente = modalContainer.querySelector('#siguiente');
 
@@ -59,8 +59,7 @@ function actualizarContenidoModal() {
     const estado = obtenerEstado();
     const versionCorto = estado.versionCorto || 'RVR60';
 
-    // CAMBIO AQUÍ: seleccionar .contenido-versiculo en lugar de .versiculo-mostrado
-    const contenedor = modalContainer.querySelector('.contenido-versiculo');
+    const contenedor = modalContainer.querySelector('.versiculo-mostrado');
     contenedor.innerHTML = '';
 
     const textoEl = document.createElement('span');
@@ -145,8 +144,8 @@ async function cargarFondoPersistente() {
     }
     
     try {
-        const urlAbsoluta = new URL(ruta, location.href).href;
-        const cachedResponse = await caches.match(urlAbsoluta);
+        const cache = await caches.open('images-biblia-v5.2.0');
+        const cachedResponse = await cache.match(ruta);
         
         if (cachedResponse) {
             const blob = await cachedResponse.blob();
@@ -155,6 +154,7 @@ async function cargarFondoPersistente() {
             return objectUrl;
         }
         
+        // Si no está en caché, no hacer fetch (el SW ya debería tenerla)
         console.warn('Fondo no encontrado en caché:', ruta);
         return null;
     } catch (error) {
